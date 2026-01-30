@@ -33,10 +33,11 @@ Decimal phases appear between their surrounding integers in numeric order.
   4. ResourceLocator types accept both mode/value pairs and string shorthand
   5. Collection and FixedCollection parameter groups compile to typed nested objects
 
-**Plans**: TBD
+**Plans:** 2 plans
 
 Plans:
-- [ ] TBD during planning
+- [ ] 01-01-PLAN.md — Project scaffold, schema types, extractor, and cache
+- [ ] 01-02-PLAN.md — Type generator with discriminated unions (TDD)
 
 ### Phase 2: SDK Core
 **Goal**: Developers write workflow code using type-safe builder API with expression references
@@ -108,7 +109,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 0/TBD | Not started | - |
+| 1. Foundation | 0/2 | Planned | - |
 | 2. SDK Core | 0/TBD | Not started | - |
 | 3. Compilation | 0/TBD | Not started | - |
 | 4. Validation | 0/TBD | Not started | - |
