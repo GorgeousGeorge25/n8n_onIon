@@ -94,41 +94,41 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| SCHEMA-01 | — | Pending |
-| SCHEMA-02 | — | Pending |
-| SCHEMA-03 | — | Pending |
-| TYGEN-01 | — | Pending |
-| TYGEN-02 | — | Pending |
-| TYGEN-03 | — | Pending |
-| TYGEN-04 | — | Pending |
-| TYGEN-05 | — | Pending |
-| BUILD-01 | — | Pending |
-| BUILD-02 | — | Pending |
-| BUILD-03 | — | Pending |
-| BUILD-04 | — | Pending |
-| EXPR-01 | — | Pending |
-| EXPR-02 | — | Pending |
-| COMP-01 | — | Pending |
-| COMP-02 | — | Pending |
-| COMP-03 | — | Pending |
-| COMP-04 | — | Pending |
-| CLI-01 | — | Pending |
-| CLI-02 | — | Pending |
-| CLI-03 | — | Pending |
-| CLI-04 | — | Pending |
-| TEST-01 | — | Pending |
-| TEST-02 | — | Pending |
-| NODE-01 | — | Pending |
-| NODE-02 | — | Pending |
-| NODE-03 | — | Pending |
-| NODE-04 | — | Pending |
-| NODE-05 | — | Pending |
+| SCHEMA-01 | Phase 1 | Pending |
+| SCHEMA-02 | Phase 1 | Pending |
+| SCHEMA-03 | Phase 1 | Pending |
+| TYGEN-01 | Phase 1 | Pending |
+| TYGEN-02 | Phase 1 | Pending |
+| TYGEN-03 | Phase 1 | Pending |
+| TYGEN-04 | Phase 1 | Pending |
+| TYGEN-05 | Phase 1 | Pending |
+| BUILD-01 | Phase 2 | Pending |
+| BUILD-02 | Phase 2 | Pending |
+| BUILD-03 | Phase 2 | Pending |
+| BUILD-04 | Phase 2 | Pending |
+| EXPR-01 | Phase 2 | Pending |
+| EXPR-02 | Phase 2 | Pending |
+| COMP-01 | Phase 3 | Pending |
+| COMP-02 | Phase 3 | Pending |
+| COMP-03 | Phase 3 | Pending |
+| COMP-04 | Phase 3 | Pending |
+| CLI-01 | Phase 3 | Pending |
+| CLI-02 | Phase 3 | Pending |
+| CLI-03 | Phase 3 | Pending |
+| CLI-04 | Phase 3 | Pending |
+| TEST-01 | Phase 4 | Pending |
+| TEST-02 | Phase 4 | Pending |
+| NODE-01 | Phase 4 | Pending |
+| NODE-02 | Phase 4 | Pending |
+| NODE-03 | Phase 4 | Pending |
+| NODE-04 | Phase 4 | Pending |
+| NODE-05 | Phase 4 | Pending |
 
 **Coverage:**
 - v1 requirements: 29 total
-- Mapped to phases: 0
-- Unmapped: 29
+- Mapped to phases: 29
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-01-31*
-*Last updated: 2026-01-31 after initial definition*
+*Last updated: 2026-01-31 after roadmap creation*
