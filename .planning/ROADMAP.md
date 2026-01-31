@@ -26,7 +26,7 @@ Post-v1.0: All 797 node schemas extracted and typed (64,512 lines).
 **Milestone Goal:** Full typed coverage of all 792 nodes, complex workflow support (credentials, merges, error paths), and comprehensive documentation.
 
 - [x] **Phase 5.1: Deployable Package** - Build and deploy workflows through tool calls, no manual steps (COMPLETE)
-- [ ] **Phase 5.2: Complex Workflow Builder** - typeVersion fix, credential support, merge input indices, error-handling paths, validation
+- [x] **Phase 5.2: Complex Workflow Builder** - typeVersion fix, credential support, merge input indices, error-handling paths, validation (COMPLETE)
 - [ ] **Phase 5.3: Automated Workflow Testing** - Execute deployed workflows, verify with test data, self-diagnose and fix failures
 - [ ] **Phase 5.4: Generate Typed Node APIs** - Split typed-api.ts, auto-generate factories for all 792 nodes, discovery catalog, SKILL.md update
 - [ ] **Phase 6: Foundation Docs** - Human-facing docs (README, installation guide); rescope after 5.2-5.4 ship
@@ -72,7 +72,7 @@ Plans:
 - [x] 05.2-01-PLAN.md — typeVersion from schemas, inputIndex, error connections (wave 1)
 - [x] 05.2-02-PLAN.md — Credential API research + credential support (wave 2)
 - [x] 05.2-03-PLAN.md — Topology layout + comprehensive validation (wave 3)
-- [ ] 05.2-04-PLAN.md — Snapshot regeneration, new tests, integration tests, regression checks (wave 4)
+- [x] 05.2-04-PLAN.md — Snapshot regeneration, new tests, integration tests, regression checks (wave 4)
 
 ### Phase 5.3: Automated Workflow Testing
 **Goal**: Claude can deploy a workflow, execute it with test data, read the results, and fix failures — a complete build-deploy-test-fix loop
@@ -164,7 +164,7 @@ Rationale: Correctness-first ordering. Fix the builder (5.2) so it produces corr
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
 | 5.1 Deployable Package | v1.1 | 1/1 | Complete | 2026-01-31 |
-| 5.2 Complex Workflow Builder | v1.1 | 0/4 | Planned | - |
+| 5.2 Complex Workflow Builder | v1.1 | 4/4 | Complete | 2026-01-31 |
 | 5.3 Automated Workflow Testing | v1.1 | 0/0 | Not started | - |
 | 5.4 Generate Typed Node APIs | v1.1 | 0/0 | Not started | - |
 | 6. Foundation Docs | v1.1 | 0/1 | Not started | - |
