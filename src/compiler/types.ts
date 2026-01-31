@@ -3,6 +3,25 @@
  */
 
 /**
+ * Validation issue (error or warning).
+ */
+export interface ValidationIssue {
+  type: 'error' | 'warning';
+  code: string;
+  message: string;
+  node?: string; // which node is affected
+}
+
+/**
+ * Validation result containing errors and warnings.
+ */
+export interface ValidationResult {
+  valid: boolean; // true if no errors (warnings are OK)
+  errors: ValidationIssue[];
+  warnings: ValidationIssue[];
+}
+
+/**
  * n8n connection format.
  * Represents a single connection from one node to another.
  */

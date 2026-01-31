@@ -20,7 +20,7 @@ export { workflow } from './builder/workflow.js';
 export * from './compiler/types.js';
 export { compileWorkflow } from './compiler/compiler.js';
 export { validateWorkflow } from './compiler/validation.js';
-export { calculateGridPosition } from './compiler/layout.js';
+export { calculateGridPosition, calculateTopologyPositions } from './compiler/layout.js';
 export { loadSchemaRegistry, getTypeVersion } from './compiler/schema-registry.js';
 
 // Code generation

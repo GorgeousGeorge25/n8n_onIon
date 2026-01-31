@@ -35,7 +35,8 @@ describe('Compiler', () => {
         expect(node.id).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/); // UUID format
         expect(typeof node.name).toBe('string');
         expect(typeof node.type).toBe('string');
-        expect(node.typeVersion).toBe(1);
+        expect(typeof node.typeVersion).toBe('number');
+        expect(node.typeVersion).toBeGreaterThan(0);
         expect(Array.isArray(node.position)).toBe(true);
         expect(node.position).toHaveLength(2);
         expect(typeof node.position[0]).toBe('number');
@@ -51,10 +52,15 @@ describe('Compiler', () => {
 
     it('should generate unique UUIDs for all nodes', async () => {
       const wf = workflow('UUID Test');
-      wf.trigger('Node1', 'n8n-nodes-base.manualTrigger', {});
-      wf.node('Node2', 'n8n-nodes-base.slack', {});
-      wf.node('Node3', 'n8n-nodes-base.http', {});
-      wf.node('Node4', 'n8n-nodes-base.code', {});
+      const n1 = wf.trigger('Node1', 'n8n-nodes-base.manualTrigger', {});
+      const n2 = wf.node('Node2', 'n8n-nodes-base.slack', {});
+      const n3 = wf.node('Node3', 'n8n-nodes-base.http', {});
+      const n4 = wf.node('Node4', 'n8n-nodes-base.code', {});
+
+      // Connect nodes to avoid orphan validation errors
+      wf.connect(n1, n2);
+      wf.connect(n2, n3);
+      wf.connect(n3, n4);
 
       const result = await compileWorkflow(wf);
 
@@ -67,11 +73,17 @@ describe('Compiler', () => {
 
     it('should assign non-overlapping grid positions', async () => {
       const wf = workflow('Layout Test');
-      wf.trigger('N1', 'n8n-nodes-base.manualTrigger', {});
-      wf.node('N2', 'n8n-nodes-base.slack', {});
-      wf.node('N3', 'n8n-nodes-base.http', {});
-      wf.node('N4', 'n8n-nodes-base.code', {});
-      wf.node('N5', 'n8n-nodes-base.webhook', {});
+      const n1 = wf.trigger('N1', 'n8n-nodes-base.manualTrigger', {});
+      const n2 = wf.node('N2', 'n8n-nodes-base.slack', {});
+      const n3 = wf.node('N3', 'n8n-nodes-base.http', {});
+      const n4 = wf.node('N4', 'n8n-nodes-base.code', {});
+      const n5 = wf.trigger('N5', 'n8n-nodes-base.webhook', {});
+
+      // Connect nodes to avoid orphan validation errors
+      wf.connect(n1, n2);
+      wf.connect(n2, n3);
+      wf.connect(n3, n4);
+      wf.connect(n5, n4); // N5 also connects to N4 (merge pattern)
 
       const result = await compileWorkflow(wf);
 
@@ -163,9 +175,12 @@ describe('Compiler', () => {
         outputIndex: 0
       };
 
-      expect(() => {
-        validateWorkflow(nodes, [badConnection]);
-      }).toThrow('Connection references unknown target: "NonExistentNode"');
+      const result = validateWorkflow(nodes, [badConnection]);
+
+      expect(result.valid).toBe(false);
+      expect(result.errors).toHaveLength(1);
+      expect(result.errors[0].code).toBe('INVALID_CONNECTION');
+      expect(result.errors[0].message).toContain('NonExistentNode');
     });
 
     it('should reject connections from non-existent nodes', () => {
@@ -180,9 +195,88 @@ describe('Compiler', () => {
         outputIndex: 0
       };
 
-      expect(() => {
-        validateWorkflow(nodes, [badConnection]);
-      }).toThrow('Connection references unknown source: "NonExistentSource"');
+      const result = validateWorkflow(nodes, [badConnection]);
+
+      expect(result.valid).toBe(false);
+      expect(result.errors).toHaveLength(1);
+      expect(result.errors[0].code).toBe('INVALID_CONNECTION');
+      expect(result.errors[0].message).toContain('NonExistentSource');
+    });
+
+    it('should require at least one trigger node', () => {
+      const wf = workflow('No Trigger Test');
+      wf.node('Action', 'n8n-nodes-base.slack', {});
+
+      const nodes = wf.getNodes();
+      const connections = wf.getConnections();
+
+      const result = validateWorkflow(nodes, connections);
+
+      expect(result.valid).toBe(false);
+      expect(result.errors.some(e => e.code === 'NO_TRIGGER')).toBe(true);
+    });
+
+    it('should detect orphan nodes', () => {
+      const wf = workflow('Orphan Test');
+      wf.trigger('Start', 'n8n-nodes-base.manualTrigger', {});
+      wf.node('Orphan', 'n8n-nodes-base.slack', {});
+
+      const nodes = wf.getNodes();
+      const connections = wf.getConnections();
+
+      const result = validateWorkflow(nodes, connections);
+
+      expect(result.valid).toBe(false);
+      expect(result.errors.some(e => e.code === 'ORPHAN_NODE' && e.node === 'Orphan')).toBe(true);
+    });
+
+    it('should warn about credentials', () => {
+      const wf = workflow('Credentials Test');
+      wf.trigger('Start', 'n8n-nodes-base.manualTrigger', {});
+      const action = wf.node('Send', 'n8n-nodes-base.slack', {}, {
+        slackApi: { id: '1', name: 'My Slack' }
+      });
+      wf.connect({ name: 'Start' }, action);
+
+      const nodes = wf.getNodes();
+      const connections = wf.getConnections();
+
+      const result = validateWorkflow(nodes, connections);
+
+      expect(result.valid).toBe(true); // Warnings don't invalidate
+      expect(result.warnings.some(w => w.code === 'MISSING_CREDENTIALS' && w.node === 'Send')).toBe(true);
+    });
+
+    it('should detect invalid expression references', () => {
+      const wf = workflow('Expression Ref Test');
+      wf.trigger('Start', 'n8n-nodes-base.manualTrigger', {});
+      const action = wf.node('Process', 'n8n-nodes-base.code', {
+        code: '={{ $node["NonExistent"].json.data }}'
+      });
+      wf.connect({ name: 'Start' }, action);
+
+      const nodes = wf.getNodes();
+      const connections = wf.getConnections();
+
+      const result = validateWorkflow(nodes, connections);
+
+      expect(result.valid).toBe(false);
+      expect(result.errors.some(e => e.code === 'INVALID_REF' && e.node === 'Process')).toBe(true);
+    });
+
+    it('should pass valid workflow with no errors', () => {
+      const wf = workflow('Valid Test');
+      const trigger = wf.trigger('Start', 'n8n-nodes-base.manualTrigger', {});
+      const action = wf.node('Send', 'n8n-nodes-base.slack', {});
+      wf.connect(trigger, action);
+
+      const nodes = wf.getNodes();
+      const connections = wf.getConnections();
+
+      const result = validateWorkflow(nodes, connections);
+
+      expect(result.valid).toBe(true);
+      expect(result.errors).toHaveLength(0);
     });
   });
 });

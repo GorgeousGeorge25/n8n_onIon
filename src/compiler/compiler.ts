@@ -24,7 +24,15 @@ export async function compileWorkflow(builder: WorkflowBuilder): Promise<N8nWork
   const connections = builder.getConnections();
 
   // Validate workflow structure
-  validateWorkflow(nodes, connections);
+  const validation = validateWorkflow(nodes, connections);
+  if (!validation.valid) {
+    const errorMessages = validation.errors.map(e => `[${e.code}] ${e.message}`).join('\n');
+    throw new Error(`Workflow validation failed:\n${errorMessages}`);
+  }
+  // Warnings are logged but don't block compilation
+  if (validation.warnings.length > 0) {
+    console.warn('Workflow warnings:', validation.warnings.map(w => `[${w.code}] ${w.message}`).join(', '));
+  }
 
   // Calculate topology-aware positions for all nodes
   const positions = calculateTopologyPositions(nodes, connections);
