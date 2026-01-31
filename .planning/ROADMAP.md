@@ -116,4 +116,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 1. Foundation | 3/3 | ✓ Complete | 2026-01-31 |
 | 2. SDK Core | 2/2 | ✓ Complete | 2026-01-31 |
 | 3. Compilation | 2/2 | ✓ Complete | 2026-01-31 |
-| 4. Validation | 0/2 | Not started | - |
+| 4. Validation | 0/2 | Planned | - |
