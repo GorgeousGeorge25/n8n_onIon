@@ -75,38 +75,40 @@ export async function extractNodeType(
   // Authenticate if no session cookie provided
   const cookie = sessionCookie || await authenticateSession();
 
-  const url = `${apiUrl}/rest/node-types`;
+  // Use /types/nodes.json endpoint which returns all node types
+  const url = `${apiUrl}/types/nodes.json`;
 
   try {
     const response = await fetch(url, {
-      method: 'POST',
+      method: 'GET',
       headers: {
-        'Content-Type': 'application/json',
         'Cookie': cookie,
       },
-      body: JSON.stringify({ nodeTypes: [nodeType] }),
     });
 
     if (response.status === 401) {
       throw new Error('Authentication failed: Session expired or invalid credentials');
     }
 
-    if (response.status === 404) {
-      throw new Error(`Node type not found: ${nodeType}`);
-    }
-
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
 
-    const data = await response.json();
+    const allNodes = await response.json();
 
-    // Response is an array of node schemas - extract the first element
-    if (!Array.isArray(data) || data.length === 0) {
-      throw new Error(`No schema returned for node type: ${nodeType}`);
+    if (!Array.isArray(allNodes)) {
+      throw new Error(`Unexpected response format: expected array, got ${typeof allNodes}`);
     }
 
-    return data[0] as N8nNodeType;
+    // Filter to find the requested node type
+    // Note: Some nodes may have multiple versions, we take the first match
+    const matchingNodes = allNodes.filter((node: N8nNodeType) => node.name === nodeType);
+
+    if (matchingNodes.length === 0) {
+      throw new Error(`Node type not found: ${nodeType}`);
+    }
+
+    return matchingNodes[0] as N8nNodeType;
   } catch (error) {
     if (error instanceof Error) {
       throw error;
@@ -121,14 +123,54 @@ export async function extractNodeType(
  * @returns Array of node type schemas
  */
 export async function extractNodeTypes(nodeTypes: string[]): Promise<N8nNodeType[]> {
-  // Authenticate once and reuse session for all requests
+  const apiUrl = process.env.N8N_API_URL || 'http://localhost:5678';
+
+  // Authenticate once
   const sessionCookie = await authenticateSession();
 
-  const schemas: N8nNodeType[] = [];
+  // Fetch all nodes at once
+  const url = `${apiUrl}/types/nodes.json`;
 
-  for (const nodeType of nodeTypes) {
-    const schema = await extractNodeType(nodeType, sessionCookie);
-    schemas.push(schema);
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: {
+      'Cookie': sessionCookie,
+    },
+  });
+
+  if (response.status === 401) {
+    throw new Error('Authentication failed: Session expired or invalid credentials');
+  }
+
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+  }
+
+  const allNodes = await response.json();
+
+  if (!Array.isArray(allNodes)) {
+    throw new Error(`Unexpected response format: expected array, got ${typeof allNodes}`);
+  }
+
+  // Filter to get requested node types
+  const schemas: N8nNodeType[] = [];
+  const nodeTypeSet = new Set(nodeTypes);
+
+  for (const node of allNodes) {
+    if (nodeTypeSet.has(node.name)) {
+      schemas.push(node as N8nNodeType);
+      // Remove from set once found (to avoid duplicates if node has multiple versions)
+      nodeTypeSet.delete(node.name);
+
+      // Break early if we've found all requested nodes
+      if (nodeTypeSet.size === 0) break;
+    }
+  }
+
+  // Check if any requested nodes were not found
+  if (nodeTypeSet.size > 0) {
+    const missing = Array.from(nodeTypeSet).join(', ');
+    throw new Error(`Node types not found: ${missing}`);
   }
 
   return schemas;
