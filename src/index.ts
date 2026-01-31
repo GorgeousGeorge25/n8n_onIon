@@ -15,3 +15,9 @@ export * from './expressions/template.js';
 // Workflow builder
 export * from './builder/types.js';
 export { workflow } from './builder/workflow.js';
+
+// Compiler
+export * from './compiler/types.js';
+export { compileWorkflow } from './compiler/compiler.js';
+export { validateWorkflow } from './compiler/validation.js';
+export { calculateGridPosition } from './compiler/layout.js';
