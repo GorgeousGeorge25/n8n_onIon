@@ -1,5 +1,5 @@
 ---
-status: complete
+status: diagnosed
 phase: 01-foundation
 source: [01-01-SUMMARY.md, 01-02-SUMMARY.md]
 started: 2026-01-31T02:15:00Z
@@ -49,7 +49,12 @@ skipped: 0
   reason: "n8n public REST API does not expose /api/v1/node-types endpoint. Returns 404. Node type schemas require internal API with cookie-based session auth, not API key auth."
   severity: blocker
   test: 2
-  root_cause: ""
-  artifacts: []
-  missing: []
+  root_cause: "Extractor uses GET /api/v1/node-types/{nodeType} which doesn't exist in n8n's public REST API. Node type schemas are served via POST /rest/node-types (internal API) which requires cookie-based session auth obtained through email/password login, not API key auth. The n8n public API (authenticated via X-N8N-API-KEY) only exposes workflows, executions, credentials, and audit endpoints — not node type definitions."
+  artifacts:
+    - path: "src/schema/extractor.ts"
+      issue: "Uses non-existent /api/v1/node-types endpoint with API key auth"
+  missing:
+    - "Switch to n8n internal API: POST /rest/node-types with cookie-based session auth"
+    - "Or: extract schemas from n8n source code / npm packages directly"
+    - "Or: use n8n's MCP server if available for node type introspection"
   debug_session: ""
