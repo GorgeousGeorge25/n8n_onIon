@@ -26,7 +26,7 @@ async function authenticateSession(): Promise<string> {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ emailOrLdapLoginId: email, password }),
     });
 
     if (response.status === 401) {
