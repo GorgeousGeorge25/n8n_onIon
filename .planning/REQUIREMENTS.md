@@ -7,17 +7,17 @@
 
 ### Schema Extraction
 
-- [ ] **SCHEMA-01**: Extractor pulls node type definitions from n8n REST API (`/api/v1/node-types`)
-- [ ] **SCHEMA-02**: Extracted schemas cached as local JSON files for offline use
-- [ ] **SCHEMA-03**: TypeScript interfaces define the n8n schema format (properties, displayOptions, credentials)
+- [x] **SCHEMA-01**: Extractor pulls node type definitions from n8n REST API (`/api/v1/node-types`)
+- [x] **SCHEMA-02**: Extracted schemas cached as local JSON files for offline use
+- [x] **SCHEMA-03**: TypeScript interfaces define the n8n schema format (properties, displayOptions, credentials)
 
 ### Type Generation
 
-- [ ] **TYGEN-01**: Generator transforms cached schemas into TypeScript interfaces
-- [ ] **TYGEN-02**: displayOptions.show conditionals produce discriminated unions (resource/operation branching)
-- [ ] **TYGEN-03**: `type: 'options'` fields generate string literal union types
-- [ ] **TYGEN-04**: ResourceLocator type supports mode/value pairs and string shorthand
-- [ ] **TYGEN-05**: Collection and FixedCollection parameter groups generate typed nested objects
+- [x] **TYGEN-01**: Generator transforms cached schemas into TypeScript interfaces
+- [x] **TYGEN-02**: displayOptions.show conditionals produce discriminated unions (resource/operation branching)
+- [x] **TYGEN-03**: `type: 'options'` fields generate string literal union types
+- [x] **TYGEN-04**: ResourceLocator type supports mode/value pairs and string shorthand
+- [x] **TYGEN-05**: Collection and FixedCollection parameter groups generate typed nested objects
 
 ### Workflow Builder
 
@@ -94,14 +94,14 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| SCHEMA-01 | Phase 1 | Pending |
-| SCHEMA-02 | Phase 1 | Pending |
-| SCHEMA-03 | Phase 1 | Pending |
-| TYGEN-01 | Phase 1 | Pending |
-| TYGEN-02 | Phase 1 | Pending |
-| TYGEN-03 | Phase 1 | Pending |
-| TYGEN-04 | Phase 1 | Pending |
-| TYGEN-05 | Phase 1 | Pending |
+| SCHEMA-01 | Phase 1 | Complete |
+| SCHEMA-02 | Phase 1 | Complete |
+| SCHEMA-03 | Phase 1 | Complete |
+| TYGEN-01 | Phase 1 | Complete |
+| TYGEN-02 | Phase 1 | Complete |
+| TYGEN-03 | Phase 1 | Complete |
+| TYGEN-04 | Phase 1 | Complete |
+| TYGEN-05 | Phase 1 | Complete |
 | BUILD-01 | Phase 2 | Pending |
 | BUILD-02 | Phase 2 | Pending |
 | BUILD-03 | Phase 2 | Pending |

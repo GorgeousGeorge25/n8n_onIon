@@ -12,7 +12,7 @@ This roadmap transforms n8n workflow JSON authoring from error-prone manual edit
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Foundation** - Schema extraction and type generation
+- [x] **Phase 1: Foundation** - Schema extraction and type generation
 - [ ] **Phase 2: SDK Core** - Workflow builder and expression system
 - [ ] **Phase 3: Compilation** - Compiler and CLI tooling
 - [ ] **Phase 4: Validation** - Testing and node coverage
@@ -36,8 +36,8 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans:** 2 plans
 
 Plans:
-- [ ] 01-01-PLAN.md — Project scaffold, schema types, extractor, and cache
-- [ ] 01-02-PLAN.md — Type generator with discriminated unions (TDD)
+- [x] 01-01-PLAN.md — Project scaffold, schema types, extractor, and cache
+- [x] 01-02-PLAN.md — Type generator with discriminated unions (TDD)
 
 ### Phase 2: SDK Core
 **Goal**: Developers write workflow code using type-safe builder API with expression references
@@ -109,7 +109,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 0/2 | Planned | - |
+| 1. Foundation | 2/2 | ✓ Complete | 2026-01-31 |
 | 2. SDK Core | 0/TBD | Not started | - |
 | 3. Compilation | 0/TBD | Not started | - |
 | 4. Validation | 0/TBD | Not started | - |
