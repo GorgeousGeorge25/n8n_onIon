@@ -11,12 +11,12 @@ See: .planning/PROJECT.md (updated 2026-01-31)
 ## Current Position
 
 Phase: 5.2 of 8 (Complex Workflow Builder — IN PROGRESS)
-Plan: 1 of 4 in current phase
+Plan: 2 of 4 in current phase
 Status: In progress
-Last activity: 2026-01-31 — Completed 05.2-01-PLAN.md
+Last activity: 2026-01-31 — Completed 05.2-02-PLAN.md
 
 Progress: v1.0 shipped (5 phases, 12 plans, 61 tests)
-v1.1: [███░░░░░░░] 25% (2/8 plans)
+v1.1: [████░░░░░░] 37.5% (3/8 plans)
 
 ## Performance Metrics
 
@@ -26,8 +26,8 @@ v1.1: [███░░░░░░░] 25% (2/8 plans)
 - Total execution time: 0.50 hours
 
 **v1.1 Velocity:**
-- Plans completed: 2
-- Average duration: 5 minutes
+- Plans completed: 3
+- Average duration: 4 minutes
 
 ## Accumulated Context
 
@@ -43,6 +43,9 @@ All v1.0 decisions logged in PROJECT.md Key Decisions table with outcomes.
 | 05.2-01 | Fall back to typeVersion 1 if schema not found | Graceful degradation prevents compilation failures if schema cache incomplete |
 | 05.2-01 | Cache schema registry on module load | Performance optimization: expensive JSON parsing happens once per process lifetime |
 | 05.2-01 | Make compiler async | Breaking change necessary to load schema registry; minimal impact as deployer already async |
+| 05.2-02 | Research live n8n API before implementing credentials | Verified actual credential structure from running instance rather than assumptions |
+| 05.2-02 | Credentials optional (4th parameter) | Backward compatibility - existing code unchanged, new code can add credentials |
+| 05.2-02 | Compiler passes credentials through unmodified | No transformation needed - direct flow from WorkflowNode to N8nNode |
 
 ### Pending Todos
 
@@ -59,13 +62,13 @@ All v1.0 decisions logged in PROJECT.md Key Decisions table with outcomes.
 
 ### Blockers/Concerns
 
-- Phase 05.2-02: Research n8n credential API (`GET /api/v1/credentials`) before planning
+- ~~Phase 05.2-02: Research n8n credential API (`GET /api/v1/credentials`) before planning~~ → Completed - credential structure verified from live workflows
 - Phase 05.2-04: Snapshot tests will fail due to typeVersion change (expected, regeneration needed)
 - Phase 5.3 prerequisite: Verify n8n execution API endpoints exist in running n8n version before planning
 - Doc phases (6-8) success criteria are outdated — written for 5-node SDK, need update after 792-node SDK ships
 
 ## Session Continuity
 
-Last session: 2026-01-31T21:07:23Z
-Stopped at: Completed 05.2-01-PLAN.md (Phase 5.2 plan 1 of 4)
-Resume with: Next plan in Phase 5.2
+Last session: 2026-01-31T21:13:57Z
+Stopped at: Completed 05.2-02-PLAN.md (Phase 5.2 plan 2 of 4)
+Resume with: Next plan in Phase 5.2 (05.2-03 error handling)
