@@ -23,8 +23,8 @@ exports[`Snapshot Tests > should compile HTTP Request workflow 1`] = `
       "name": "Manual Trigger",
       "parameters": {},
       "position": [
-        100,
-        100,
+        250,
+        300,
       ],
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
@@ -39,11 +39,11 @@ exports[`Snapshot Tests > should compile HTTP Request workflow 1`] = `
         "url": "https://api.example.com/users",
       },
       "position": [
-        100,
+        550,
         300,
       ],
       "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 1,
+      "typeVersion": 4.3,
     },
   ],
   "settings": {},
@@ -91,8 +91,8 @@ exports[`Snapshot Tests > should compile IF workflow with two output branches 1`
       "name": "Manual Trigger",
       "parameters": {},
       "position": [
-        100,
-        100,
+        250,
+        300,
       ],
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
@@ -112,11 +112,11 @@ exports[`Snapshot Tests > should compile IF workflow with two output branches 1`
         },
       },
       "position": [
-        100,
+        550,
         300,
       ],
       "type": "n8n-nodes-base.if",
-      "typeVersion": 1,
+      "typeVersion": 2.3,
     },
     {
       "id": "uuid-2",
@@ -132,11 +132,11 @@ exports[`Snapshot Tests > should compile IF workflow with two output branches 1`
         },
       },
       "position": [
-        100,
-        500,
+        850,
+        300,
       ],
       "type": "n8n-nodes-base.set",
-      "typeVersion": 1,
+      "typeVersion": 3.4,
     },
     {
       "id": "uuid-3",
@@ -152,11 +152,152 @@ exports[`Snapshot Tests > should compile IF workflow with two output branches 1`
         },
       },
       "position": [
-        400,
-        100,
+        850,
+        450,
       ],
       "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+    },
+  ],
+  "settings": {},
+}
+`;
+
+exports[`Snapshot Tests > should compile Merge workflow with inputIndex on connections 1`] = `
+{
+  "active": false,
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "Set 1",
+            "type": "main",
+          },
+        ],
+      ],
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "Set 2",
+            "type": "main",
+          },
+        ],
+      ],
+    },
+    "Set 1": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "Merge",
+            "type": "main",
+          },
+        ],
+      ],
+    },
+    "Set 2": {
+      "main": [
+        [
+          {
+            "index": 1,
+            "node": "Merge",
+            "type": "main",
+          },
+        ],
+      ],
+    },
+  },
+  "name": "Merge Test",
+  "nodes": [
+    {
+      "id": "uuid-0",
+      "name": "Manual Trigger",
+      "parameters": {},
+      "position": [
+        250,
+        300,
+      ],
+      "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
+    },
+    {
+      "id": "uuid-1",
+      "name": "Set 1",
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "source",
+              "value": "trigger1",
+            },
+          ],
+        },
+      },
+      "position": [
+        550,
+        300,
+      ],
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+    },
+    {
+      "id": "uuid-2",
+      "name": "Schedule Trigger",
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 1,
+            },
+          ],
+        },
+      },
+      "position": [
+        250,
+        450,
+      ],
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+    },
+    {
+      "id": "uuid-3",
+      "name": "Set 2",
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "source",
+              "value": "trigger2",
+            },
+          ],
+        },
+      },
+      "position": [
+        550,
+        450,
+      ],
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+    },
+    {
+      "id": "uuid-4",
+      "name": "Merge",
+      "parameters": {
+        "combinationMode": "multiplex",
+        "mode": "combine",
+      },
+      "position": [
+        850,
+        300,
+      ],
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
     },
   ],
   "settings": {},
@@ -186,8 +327,8 @@ exports[`Snapshot Tests > should compile Set workflow with field assignments 1`]
       "name": "Manual Trigger",
       "parameters": {},
       "position": [
-        100,
-        100,
+        250,
+        300,
       ],
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
@@ -207,11 +348,11 @@ exports[`Snapshot Tests > should compile Set workflow with field assignments 1`]
         },
       },
       "position": [
-        100,
+        550,
         300,
       ],
       "type": "n8n-nodes-base.set",
-      "typeVersion": 1,
+      "typeVersion": 3.4,
     },
   ],
   "settings": {},
@@ -244,11 +385,11 @@ exports[`Snapshot Tests > should compile Slack workflow with expression 1`] = `
         "path": "slack-hook",
       },
       "position": [
-        100,
-        100,
+        250,
+        300,
       ],
       "type": "n8n-nodes-base.webhook",
-      "typeVersion": 1,
+      "typeVersion": 2.1,
     },
     {
       "id": "uuid-1",
@@ -260,11 +401,11 @@ exports[`Snapshot Tests > should compile Slack workflow with expression 1`] = `
         "text": "={{ $node['Webhook'].json.body.message }}",
       },
       "position": [
-        100,
+        550,
         300,
       ],
       "type": "n8n-nodes-base.slack",
-      "typeVersion": 1,
+      "typeVersion": 2.4,
     },
   ],
   "settings": {},
@@ -298,11 +439,11 @@ exports[`Snapshot Tests > should compile Webhook workflow 1`] = `
         "responseMode": "onReceived",
       },
       "position": [
-        100,
-        100,
+        250,
+        300,
       ],
       "type": "n8n-nodes-base.webhook",
-      "typeVersion": 1,
+      "typeVersion": 2.1,
     },
     {
       "id": "uuid-1",
@@ -314,11 +455,260 @@ exports[`Snapshot Tests > should compile Webhook workflow 1`] = `
         },
       },
       "position": [
-        100,
+        550,
         300,
       ],
       "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+    },
+  ],
+  "settings": {},
+}
+`;
+
+exports[`Snapshot Tests > should compile branching workflow with proper topology layout 1`] = `
+{
+  "active": false,
+  "connections": {
+    "Check Status": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "Success Path",
+            "type": "main",
+          },
+        ],
+        [
+          {
+            "index": 0,
+            "node": "Failure Path",
+            "type": "main",
+          },
+        ],
+      ],
+    },
+    "Start": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "Check Status",
+            "type": "main",
+          },
+        ],
+      ],
+    },
+  },
+  "name": "Topology Test",
+  "nodes": [
+    {
+      "id": "uuid-0",
+      "name": "Start",
+      "parameters": {},
+      "position": [
+        250,
+        300,
+      ],
+      "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
+    },
+    {
+      "id": "uuid-1",
+      "name": "Check Status",
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "operation": "equal",
+              "value1": "={{ $json.status }}",
+              "value2": "ok",
+            },
+          ],
+        },
+      },
+      "position": [
+        550,
+        300,
+      ],
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+    },
+    {
+      "id": "uuid-2",
+      "name": "Success Path",
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "result",
+              "value": "success",
+            },
+          ],
+        },
+      },
+      "position": [
+        850,
+        300,
+      ],
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+    },
+    {
+      "id": "uuid-3",
+      "name": "Failure Path",
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "result",
+              "value": "failure",
+            },
+          ],
+        },
+      },
+      "position": [
+        850,
+        450,
+      ],
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+    },
+  ],
+  "settings": {},
+}
+`;
+
+exports[`Snapshot Tests > should compile workflow with credentials attached to node 1`] = `
+{
+  "active": false,
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "Send Slack",
+            "type": "main",
+          },
+        ],
+      ],
+    },
+  },
+  "name": "Credentials Test",
+  "nodes": [
+    {
+      "id": "uuid-0",
+      "name": "Manual Trigger",
+      "parameters": {},
+      "position": [
+        250,
+        300,
+      ],
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+    },
+    {
+      "credentials": {
+        "slackApi": {
+          "id": "1",
+          "name": "My Slack",
+        },
+      },
+      "id": "uuid-1",
+      "name": "Send Slack",
+      "parameters": {
+        "operation": "post",
+        "resource": "message",
+        "text": "Hello",
+      },
+      "position": [
+        550,
+        300,
+      ],
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+    },
+  ],
+  "settings": {},
+}
+`;
+
+exports[`Snapshot Tests > should compile workflow with error connection 1`] = `
+{
+  "active": false,
+  "connections": {
+    "HTTP Request": {
+      "error": [
+        [
+          {
+            "index": 0,
+            "node": "Error Handler",
+            "type": "error",
+          },
+        ],
+      ],
+    },
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "HTTP Request",
+            "type": "main",
+          },
+        ],
+      ],
+    },
+  },
+  "name": "Error Connection Test",
+  "nodes": [
+    {
+      "id": "uuid-0",
+      "name": "Manual Trigger",
+      "parameters": {},
+      "position": [
+        250,
+        300,
+      ],
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+    },
+    {
+      "id": "uuid-1",
+      "name": "HTTP Request",
+      "parameters": {
+        "authentication": "none",
+        "method": "GET",
+        "onError": "continueErrorOutput",
+        "url": "https://api.example.com/data",
+      },
+      "position": [
+        550,
+        300,
+      ],
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+    },
+    {
+      "id": "uuid-2",
+      "name": "Error Handler",
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "error",
+              "value": "handled",
+            },
+          ],
+        },
+      },
+      "position": [
+        850,
+        300,
+      ],
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
     },
   ],
   "settings": {},
