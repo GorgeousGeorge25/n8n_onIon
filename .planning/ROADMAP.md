@@ -100,10 +100,11 @@ Plans:
   6. IF node compiles with conditional logic and routing configuration
   7. Set node compiles with field assignment operations and value transformations
 
-**Plans**: TBD
+**Plans:** 2 plans
 
 Plans:
-- [ ] TBD during planning
+- [ ] 04-01-PLAN.md — Snapshot tests for all 5 target nodes (Webhook, HTTP Request, Slack, IF, Set)
+- [ ] 04-02-PLAN.md — Integration tests importing compiled workflows into n8n via API
 
 ## Progress
 
@@ -115,4 +116,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 1. Foundation | 3/3 | ✓ Complete | 2026-01-31 |
 | 2. SDK Core | 2/2 | ✓ Complete | 2026-01-31 |
 | 3. Compilation | 2/2 | ✓ Complete | 2026-01-31 |
-| 4. Validation | 0/TBD | Not started | - |
+| 4. Validation | 0/2 | Not started | - |
