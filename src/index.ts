@@ -7,3 +7,11 @@
 export * from './schema/types.js';
 export * from './schema/extractor.js';
 export * from './schema/cache.js';
+
+// Expression system
+export * from './expressions/reference.js';
+export * from './expressions/template.js';
+
+// Workflow builder
+export * from './builder/types.js';
+export { workflow } from './builder/workflow.js';
