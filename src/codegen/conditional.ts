@@ -137,7 +137,7 @@ export function buildDiscriminatedUnions(
         fields.push(generatePropertyType(prop));
       }
 
-      interfaces.push(`interface ${interfaceName} {\n${fields.join('\n')}\n}`);
+      interfaces.push(`export interface ${interfaceName} {\n${fields.join('\n')}\n}`);
     }
   }
 

@@ -21,3 +21,7 @@ export * from './compiler/types.js';
 export { compileWorkflow } from './compiler/compiler.js';
 export { validateWorkflow } from './compiler/validation.js';
 export { calculateGridPosition } from './compiler/layout.js';
+
+// Code generation
+export { generateNodeType, generateNodeTypes } from './codegen/generator.js';
+export { analyzeDisplayOptions, buildDiscriminatedUnions } from './codegen/conditional.js';

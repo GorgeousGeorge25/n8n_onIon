@@ -13,7 +13,7 @@ const SHARED_TYPES = `/**
  * Expression type for n8n expression fields
  * Allows dynamic values using n8n expression syntax
  */
-interface Expression<T> {
+export interface Expression<T> {
   __expression: string;
   __type?: T;
 }
@@ -22,7 +22,7 @@ interface Expression<T> {
  * ResourceLocator type for n8n resource selection
  * Supports both object form and string shorthand
  */
-interface ResourceLocator {
+export interface ResourceLocator {
   __rl: true;
   mode: 'list' | 'id' | 'name' | 'url';
   value: string;
@@ -51,7 +51,7 @@ export function generateNodeType(schema: N8nNodeType): string {
     fields.push(`  ${prop.name}${optional}: ${tsType};`);
   }
 
-  return `interface ${nodeName}Node {\n${fields.join('\n')}\n}\n\nexport type ${nodeName}Node = ${nodeName}Node;`;
+  return `export interface ${nodeName}Node {\n${fields.join('\n')}\n}`;
 }
 
 /**

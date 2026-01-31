@@ -455,13 +455,13 @@ describe('Type Generator', () => {
 
       const result = generateNodeTypes(schemas);
 
-      // Should have shared types
-      expect(result).toContain('interface Expression<T>');
-      expect(result).toContain('interface ResourceLocator');
+      // Should have shared types (exported)
+      expect(result).toContain('export interface Expression<T>');
+      expect(result).toContain('export interface ResourceLocator');
 
-      // Should have both node types
-      expect(result).toContain('export type SlackNode');
-      expect(result).toContain('export type HttpNode');
+      // Should have both node types (exported interfaces)
+      expect(result).toContain('export interface SlackNode');
+      expect(result).toContain('export interface HttpNode');
     });
   });
 });
