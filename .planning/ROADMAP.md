@@ -16,7 +16,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 2: SDK Core** - Workflow builder and expression system
 - [x] **Phase 3: Compilation** - Compiler and CLI tooling
 - [x] **Phase 4: Validation** - Testing and node coverage
-- [ ] **Phase 5: Typed Node API** - Wire generated types into builder for compile-time safety
+- [x] **Phase 5: Typed Node API** - Wire generated types into builder for compile-time safety
 
 ## Phase Details
 
@@ -126,7 +126,7 @@ Plans:
 Plans:
 - [x] 05-01-PLAN.md — Fix codegen exports, create typed node API factory, re-export from index
 - [x] 05-02-PLAN.md — TDD tests for typed node API correctness and compile-time safety
-- [ ] 05-03-PLAN.md — Gap closure: fix codegen dedup, rewire typed-api to import generated types
+- [x] 05-03-PLAN.md — Gap closure: fix codegen dedup, rewire typed-api to import generated types
 
 ## Progress
 
@@ -139,4 +139,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 2. SDK Core | 2/2 | ✓ Complete | 2026-01-31 |
 | 3. Compilation | 2/2 | ✓ Complete | 2026-01-31 |
 | 4. Validation | 2/2 | ✓ Complete | 2026-01-31 |
-| 5. Typed Node API | 0/TBD | Not started | - |
+| 5. Typed Node API | 3/3 | ✓ Complete | 2026-01-31 |
