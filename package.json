@@ -11,6 +11,7 @@
     "generate": "tsx cli/generate.ts",
     "build-workflow": "tsx cli/build.ts",
     "validate": "tsx cli/validate.ts",
+    "deploy": "tsx cli/deploy.ts",
     "test": "vitest run"
   },
   "devDependencies": {
