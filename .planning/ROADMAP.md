@@ -16,6 +16,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 2: SDK Core** - Workflow builder and expression system
 - [x] **Phase 3: Compilation** - Compiler and CLI tooling
 - [x] **Phase 4: Validation** - Testing and node coverage
+- [ ] **Phase 5: Typed Node API** - Wire generated types into builder for compile-time safety
 
 ## Phase Details
 
@@ -106,6 +107,25 @@ Plans:
 - [x] 04-01-PLAN.md — Snapshot tests for all 5 target nodes (Webhook, HTTP Request, Slack, IF, Set)
 - [x] 04-02-PLAN.md — Integration tests importing compiled workflows into n8n via API
 
+### Phase 5: Typed Node API
+**Goal**: Generated TypeScript types enforce node parameter schemas at compile time via a typed node API
+**Gap Closure:** Closes tech debt from v1 audit — `generated/nodes.ts` produced but not consumed
+
+**Depends on**: Phase 4 (needs validated pipeline)
+
+**Success Criteria** (what must be TRUE):
+  1. Typed node API provides `nodes.slack.message.post(params)` style calls with compile-time type checking
+  2. Generated types (SlackMessagePost, HttpRequestNode, etc.) are consumed by the typed API
+  3. Invalid parameters produce TypeScript compilation errors
+  4. Codegen module re-exported from `src/index.ts`
+  5. Existing untyped builder API continues to work (backward compatible)
+  6. Type generator exports individual operation interfaces (not just union types)
+
+**Plans:** TBD
+
+Plans:
+- [ ] TBD during planning
+
 ## Progress
 
 **Execution Order:**
@@ -117,3 +137,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 2. SDK Core | 2/2 | ✓ Complete | 2026-01-31 |
 | 3. Compilation | 2/2 | ✓ Complete | 2026-01-31 |
 | 4. Validation | 2/2 | ✓ Complete | 2026-01-31 |
+| 5. Typed Node API | 0/TBD | Not started | - |
