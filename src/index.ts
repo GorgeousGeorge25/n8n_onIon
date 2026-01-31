@@ -5,3 +5,5 @@
 
 // Schema types and utilities
 export * from './schema/types.js';
+export * from './schema/extractor.js';
+export * from './schema/cache.js';
