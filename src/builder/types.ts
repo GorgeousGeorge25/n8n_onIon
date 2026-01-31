@@ -17,6 +17,7 @@ export interface WorkflowNode {
   name: string; // Display name / identifier
   type: string; // n8n node type (e.g., 'n8n-nodes-base.slack')
   parameters: Record<string, unknown>; // Node configuration
+  credentials?: Record<string, { id: string; name: string }>; // Credentials by type (e.g., { "slackApi": { id: "1", name: "My Slack" } })
 }
 
 /**
@@ -43,18 +44,20 @@ export interface WorkflowBuilder {
    * @param name - Unique node name
    * @param type - n8n node type (e.g., 'n8n-nodes-base.webhook')
    * @param parameters - Node configuration
+   * @param credentials - Optional credentials by type (e.g., { "slackApi": { id: "1", name: "My Slack" } })
    * @returns NodeRef for use in connect()
    */
-  trigger(name: string, type: string, parameters: Record<string, unknown>): NodeRef;
+  trigger(name: string, type: string, parameters: Record<string, unknown>, credentials?: Record<string, { id: string; name: string }>): NodeRef;
 
   /**
    * Add an action node to the workflow.
    * @param name - Unique node name
    * @param type - n8n node type (e.g., 'n8n-nodes-base.slack')
    * @param parameters - Node configuration
+   * @param credentials - Optional credentials by type (e.g., { "slackApi": { id: "1", name: "My Slack" } })
    * @returns NodeRef for use in connect()
    */
-  node(name: string, type: string, parameters: Record<string, unknown>): NodeRef;
+  node(name: string, type: string, parameters: Record<string, unknown>, credentials?: Record<string, { id: string; name: string }>): NodeRef;
 
   /**
    * Connect two nodes.

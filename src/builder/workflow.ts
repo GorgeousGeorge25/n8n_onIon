@@ -31,24 +31,28 @@ export function workflow(name: string): WorkflowBuilder {
   /**
    * Internal helper to add a node with duplicate detection.
    */
-  function addNode(name: string, type: string, parameters: Record<string, unknown>): NodeRef {
+  function addNode(name: string, type: string, parameters: Record<string, unknown>, credentials?: Record<string, { id: string; name: string }>): NodeRef {
     if (nodeNames.has(name)) {
       throw new Error(`Node name "${name}" is duplicate. Each node must have a unique name within the workflow.`);
     }
     nodeNames.add(name);
-    nodes.push({ name, type, parameters });
+    const node: WorkflowNode = { name, type, parameters };
+    if (credentials) {
+      node.credentials = credentials;
+    }
+    nodes.push(node);
     return { name };
   }
 
   return {
     name,
 
-    trigger(name: string, type: string, parameters: Record<string, unknown>): NodeRef {
-      return addNode(name, type, parameters);
+    trigger(name: string, type: string, parameters: Record<string, unknown>, credentials?: Record<string, { id: string; name: string }>): NodeRef {
+      return addNode(name, type, parameters, credentials);
     },
 
-    node(name: string, type: string, parameters: Record<string, unknown>): NodeRef {
-      return addNode(name, type, parameters);
+    node(name: string, type: string, parameters: Record<string, unknown>, credentials?: Record<string, { id: string; name: string }>): NodeRef {
+      return addNode(name, type, parameters, credentials);
     },
 
     connect(from: NodeRef, to: NodeRef, outputIndex: number = 0, inputIndex: number = 0): void {
