@@ -26,6 +26,8 @@ export interface WorkflowConnection {
   from: string; // Source node name
   to: string; // Target node name
   outputIndex: number; // Output index (0 for main, 1+ for branches like IF false)
+  inputIndex?: number; // Input index on target node (default 0) for merge/fan-in patterns
+  connectionType?: 'main' | 'error'; // Connection type (default 'main')
 }
 
 /**
@@ -59,8 +61,17 @@ export interface WorkflowBuilder {
    * @param from - Source node reference
    * @param to - Target node reference
    * @param outputIndex - Output index (default 0, use 1+ for branching nodes like IF)
+   * @param inputIndex - Input index on target node (default 0, use for merge/fan-in patterns)
    */
-  connect(from: NodeRef, to: NodeRef, outputIndex?: number): void;
+  connect(from: NodeRef, to: NodeRef, outputIndex?: number, inputIndex?: number): void;
+
+  /**
+   * Connect two nodes with error handling flow.
+   * Creates an error-type connection from source to target.
+   * @param from - Source node reference
+   * @param to - Target node reference
+   */
+  connectError(from: NodeRef, to: NodeRef): void;
 
   /**
    * Get all nodes in the workflow.

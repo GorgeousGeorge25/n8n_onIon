@@ -51,7 +51,7 @@ export function workflow(name: string): WorkflowBuilder {
       return addNode(name, type, parameters);
     },
 
-    connect(from: NodeRef, to: NodeRef, outputIndex: number = 0): void {
+    connect(from: NodeRef, to: NodeRef, outputIndex: number = 0, inputIndex: number = 0): void {
       // Validate both nodes exist
       if (!nodeNames.has(from.name)) {
         throw new Error(`Unknown node: "${from.name}". Cannot connect from a node that doesn't exist in the workflow.`);
@@ -59,7 +59,18 @@ export function workflow(name: string): WorkflowBuilder {
       if (!nodeNames.has(to.name)) {
         throw new Error(`Unknown node: "${to.name}". Cannot connect to a node that doesn't exist in the workflow.`);
       }
-      connections.push({ from: from.name, to: to.name, outputIndex });
+      connections.push({ from: from.name, to: to.name, outputIndex, inputIndex });
+    },
+
+    connectError(from: NodeRef, to: NodeRef): void {
+      // Validate both nodes exist
+      if (!nodeNames.has(from.name)) {
+        throw new Error(`Unknown node: "${from.name}". Cannot connect from a node that doesn't exist in the workflow.`);
+      }
+      if (!nodeNames.has(to.name)) {
+        throw new Error(`Unknown node: "${to.name}". Cannot connect to a node that doesn't exist in the workflow.`);
+      }
+      connections.push({ from: from.name, to: to.name, outputIndex: 0, inputIndex: 0, connectionType: 'error' });
     },
 
     getNodes(): WorkflowNode[] {
