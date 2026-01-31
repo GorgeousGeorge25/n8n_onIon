@@ -25,11 +25,25 @@ Post-v1.0: All 797 node schemas extracted and typed (64,512 lines).
 
 **Milestone Goal:** Comprehensive documentation so the SDK is usable by both Claude (SKILL.md) and human developers (docs/) without reading source code.
 
+- [ ] **Phase 5.1: Deployable Package** - Build and deploy workflows through tool calls, no manual steps (INSERTED)
 - [ ] **Phase 6: Foundation Docs** - Skill file, overview, and installation guide
 - [ ] **Phase 7: API and Tutorials** - Full API reference and 5 step-by-step guides
 - [ ] **Phase 8: Examples and Reference** - Complete examples, troubleshooting, and node reference
 
 ## Phase Details
+
+### Phase 5.1: Deployable Package (INSERTED)
+**Goal**: User describes a workflow, Claude builds and deploys it to n8n through tool calls — no manual steps, no CLI commands, full automation
+**Depends on**: Phase 5 (v1.0 shipped)
+**Requirements**: TBD (to be defined during planning)
+**Success Criteria** (what must be TRUE):
+  1. A workflow can be built and deployed to n8n entirely through tool calls — no manual `npm run` or file copy steps
+  2. User describes what they want, Claude generates the workflow code, compiles it, and deploys it to n8n in one flow
+  3. The deployed workflow is functional in n8n on the first try
+**Plans**: 1 plan
+
+Plans:
+- [ ] 05.1-01-PLAN.md — Deploy command: compile + import to n8n in one step
 
 ### Phase 6: Foundation Docs
 **Goal**: A new user (human or Claude) can understand what the SDK does and get it running
@@ -76,10 +90,11 @@ Plans:
 
 ## Progress
 
-**Execution Order:** Phase 6 -> Phase 7 -> Phase 8
+**Execution Order:** Phase 5.1 -> Phase 6 -> Phase 7 -> Phase 8
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
+| 5.1 Deployable Package | v1.1 | 0/? | Not started | - |
 | 6. Foundation Docs | v1.1 | 0/1 | Not started | - |
 | 7. API and Tutorials | v1.1 | 0/2 | Not started | - |
 | 8. Examples and Reference | v1.1 | 0/2 | Not started | - |
