@@ -121,10 +121,11 @@ Plans:
   5. Existing untyped builder API continues to work (backward compatible)
   6. Type generator exports individual operation interfaces (not just union types)
 
-**Plans:** TBD
+**Plans:** 2 plans
 
 Plans:
-- [ ] TBD during planning
+- [ ] 05-01-PLAN.md — Fix codegen exports, create typed node API factory, re-export from index
+- [ ] 05-02-PLAN.md — TDD tests for typed node API correctness and compile-time safety
 
 ## Progress
 
