@@ -55,10 +55,11 @@ Plans:
   5. Node output references compile to correct `$node['Name'].json.field` syntax
   6. Template literals compile to n8n string concatenation expressions
 
-**Plans**: TBD
+**Plans:** 2 plans
 
 Plans:
-- [ ] TBD during planning
+- [ ] 02-01-PLAN.md — Expression system: node output references and template literals (TDD)
+- [ ] 02-02-PLAN.md — Workflow builder: workflow(), trigger(), node(), connect() (TDD)
 
 ### Phase 3: Compilation
 **Goal**: TypeScript workflow code compiles to structurally valid, importable n8n JSON
@@ -111,6 +112,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 3/3 | ✓ Complete | 2026-01-31 |
-| 2. SDK Core | 0/TBD | Not started | - |
+| 2. SDK Core | 0/2 | Not started | - |
 | 3. Compilation | 0/TBD | Not started | - |
 | 4. Validation | 0/TBD | Not started | - |
