@@ -58,6 +58,7 @@ export interface N8nNodeType {
   name: string;           // e.g. "n8n-nodes-base.slack"
   displayName: string;
   version: number | number[];
+  defaultVersion?: number;  // Preferred version to use when creating new nodes
   description: string;
   defaults: Record<string, unknown>;
   properties: N8nProperty[];
