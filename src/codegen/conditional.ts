@@ -101,6 +101,85 @@ export function analyzeDisplayOptions(properties: N8nProperty[]): ConditionalTre
 }
 
 /**
+ * Deduplicates an array of properties by name.
+ * When the same property name appears multiple times (due to displayOptions conditions),
+ * the types are merged into a union. The property is optional if ANY occurrence is optional.
+ */
+export function deduplicateProperties(properties: N8nProperty[]): N8nProperty[] {
+  const seen = new Map<string, N8nProperty[]>();
+
+  for (const prop of properties) {
+    const existing = seen.get(prop.name);
+    if (existing) {
+      existing.push(prop);
+    } else {
+      seen.set(prop.name, [prop]);
+    }
+  }
+
+  const result: N8nProperty[] = [];
+  for (const [, props] of seen) {
+    if (props.length === 1) {
+      result.push(props[0]);
+    } else {
+      // Merge: use first as base, mark optional if any is optional
+      const merged = { ...props[0] };
+      merged.required = props.every(p => p.required);
+      result.push(merged);
+    }
+  }
+
+  return result;
+}
+
+/**
+ * Deduplicates generated field strings by property name.
+ * When the same property name appears with different types, merges into a union type.
+ */
+function deduplicateFields(fields: string[]): string[] {
+  const seen = new Map<string, { optional: boolean; types: Set<string>; order: number }>();
+  let order = 0;
+
+  for (const field of fields) {
+    // Parse field: "  name?: type;" or "  name: type;"
+    const match = field.match(/^  (\w+)(\??):\s*(.+);$/);
+    if (!match) {
+      // Can't parse (e.g., discriminant literal), keep as-is via special key
+      seen.set(`__raw_${order}`, { optional: false, types: new Set([field]), order: order++ });
+      continue;
+    }
+
+    const [, name, optMarker, typeStr] = match;
+    const isOptional = optMarker === '?';
+
+    const existing = seen.get(name);
+    if (existing) {
+      existing.types.add(typeStr);
+      // Property is optional if ANY occurrence is optional
+      if (isOptional) existing.optional = true;
+    } else {
+      seen.set(name, { optional: isOptional, types: new Set([typeStr]), order: order++ });
+    }
+  }
+
+  // Reconstruct fields in original order
+  const entries = [...seen.entries()].sort((a, b) => a[1].order - b[1].order);
+  const result: string[] = [];
+
+  for (const [key, entry] of entries) {
+    if (key.startsWith('__raw_')) {
+      result.push([...entry.types][0]);
+      continue;
+    }
+    const opt = entry.optional ? '?' : '';
+    const mergedType = [...entry.types].join(' | ');
+    result.push(`  ${key}${opt}: ${mergedType};`);
+  }
+
+  return result;
+}
+
+/**
  * Generates TypeScript discriminated union interfaces from conditional tree
  */
 export function buildDiscriminatedUnions(
@@ -127,17 +206,25 @@ export function buildDiscriminatedUnions(
       fields.push(`  resource: '${resource}';`);
       fields.push(`  operation: '${operation}';`);
 
-      // Add common properties
-      for (const prop of tree.commonProperties) {
+      // Add common properties (deduplicated)
+      const dedupedCommon = deduplicateProperties(tree.commonProperties);
+      for (const prop of dedupedCommon) {
         fields.push(generatePropertyType(prop));
       }
 
-      // Add branch-specific properties
-      for (const prop of properties) {
+      // Add branch-specific properties (deduplicated, excluding already-added common ones)
+      const commonNames = new Set(dedupedCommon.map(p => p.name));
+      const branchOnly = properties.filter(p => !commonNames.has(p.name));
+      const dedupedBranch = deduplicateProperties(branchOnly);
+      for (const prop of dedupedBranch) {
         fields.push(generatePropertyType(prop));
       }
 
-      interfaces.push(`export interface ${interfaceName} {\n${fields.join('\n')}\n}`);
+      // Deduplicate the final field strings (handles cases where common and branch
+      // generate the same property name with different types)
+      const dedupedFields = deduplicateFields(fields);
+
+      interfaces.push(`export interface ${interfaceName} {\n${dedupedFields.join('\n')}\n}`);
     }
   }
 

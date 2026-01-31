@@ -4,7 +4,7 @@
  */
 
 import type { N8nNodeType } from '../schema/types.js';
-import { analyzeDisplayOptions, buildDiscriminatedUnions } from './conditional.js';
+import { analyzeDisplayOptions, buildDiscriminatedUnions, deduplicateProperties } from './conditional.js';
 
 /**
  * Shared TypeScript type definitions
@@ -43,12 +43,31 @@ export function generateNodeType(schema: N8nNodeType): string {
     return buildDiscriminatedUnions(nodeName, tree);
   }
 
-  // Otherwise, generate a simple interface
-  const fields: string[] = [];
-  for (const prop of tree.commonProperties) {
+  // Otherwise, generate a simple interface with deduplicated properties
+  const dedupedProps = deduplicateProperties(tree.commonProperties);
+  const fieldMap = new Map<string, { optional: boolean; types: Set<string>; order: number }>();
+  let order = 0;
+
+  for (const prop of dedupedProps) {
     const optional = prop.required ? '' : '?';
     const tsType = mapPropertyType(prop);
-    fields.push(`  ${prop.name}${optional}: ${tsType};`);
+    const name = prop.name;
+
+    const existing = fieldMap.get(name);
+    if (existing) {
+      existing.types.add(tsType);
+      if (optional === '?') existing.optional = true;
+    } else {
+      fieldMap.set(name, { optional: optional === '?', types: new Set([tsType]), order: order++ });
+    }
+  }
+
+  const fields: string[] = [];
+  const sorted = [...fieldMap.entries()].sort((a, b) => a[1].order - b[1].order);
+  for (const [name, entry] of sorted) {
+    const opt = entry.optional ? '?' : '';
+    const mergedType = [...entry.types].join(' | ');
+    fields.push(`  ${name}${opt}: ${mergedType};`);
   }
 
   return `export interface ${nodeName}Node {\n${fields.join('\n')}\n}`;
