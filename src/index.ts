@@ -29,3 +29,7 @@ export { analyzeDisplayOptions, buildDiscriminatedUnions, deduplicateProperties 
 // Typed node API
 export { createTypedNodes } from './codegen/typed-api.js';
 export type { TypedNodes } from './codegen/typed-api.js';
+
+// Deployer
+export * from './deployer/types.js';
+export { deployWorkflow } from './deployer/deploy.js';
