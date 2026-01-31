@@ -25,7 +25,7 @@ Post-v1.0: All 797 node schemas extracted and typed (64,512 lines).
 
 **Milestone Goal:** Comprehensive documentation so the SDK is usable by both Claude (SKILL.md) and human developers (docs/) without reading source code.
 
-- [ ] **Phase 5.1: Deployable Package** - Build and deploy workflows through tool calls, no manual steps (INSERTED)
+- [x] **Phase 5.1: Deployable Package** - Build and deploy workflows through tool calls, no manual steps (COMPLETE)
 - [ ] **Phase 6: Foundation Docs** - Skill file, overview, and installation guide
 - [ ] **Phase 7: API and Tutorials** - Full API reference and 5 step-by-step guides
 - [ ] **Phase 8: Examples and Reference** - Complete examples, troubleshooting, and node reference
@@ -43,7 +43,7 @@ Post-v1.0: All 797 node schemas extracted and typed (64,512 lines).
 **Plans**: 1 plan
 
 Plans:
-- [ ] 05.1-01-PLAN.md — Deploy command: compile + import to n8n in one step
+- [x] 05.1-01-PLAN.md — Deploy command: compile + import to n8n in one step
 
 ### Phase 6: Foundation Docs
 **Goal**: A new user (human or Claude) can understand what the SDK does and get it running
@@ -94,7 +94,7 @@ Plans:
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
-| 5.1 Deployable Package | v1.1 | 0/? | Not started | - |
+| 5.1 Deployable Package | v1.1 | 1/1 | Complete | 2026-01-31 |
 | 6. Foundation Docs | v1.1 | 0/1 | Not started | - |
 | 7. API and Tutorials | v1.1 | 0/2 | Not started | - |
 | 8. Examples and Reference | v1.1 | 0/2 | Not started | - |
