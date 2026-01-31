@@ -1,6 +1,7 @@
 I vibecoded this.. let me know if it works. Also first public repo.
 
-My problem was that Claude Code made workflows but once it uplaoded them built workflows - i discovered that it guesses what datafields there are and hence flooded with errors.
+My problem was that Claude Code made workflows but once it uplaoded them built
+workflows - i discovered that it guesses what datafields there are and hence flooded with errors.
 This makes Claude Code create proper JSONs so that your workflows in n8n works.
 
 Special thanks to GSD (get-shit-done) repo!
