@@ -24,7 +24,7 @@ export { calculateGridPosition } from './compiler/layout.js';
 
 // Code generation
 export { generateNodeType, generateNodeTypes } from './codegen/generator.js';
-export { analyzeDisplayOptions, buildDiscriminatedUnions } from './codegen/conditional.js';
+export { analyzeDisplayOptions, buildDiscriminatedUnions, deduplicateProperties } from './codegen/conditional.js';
 
 // Typed node API
 export { createTypedNodes } from './codegen/typed-api.js';

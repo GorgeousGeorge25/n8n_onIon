@@ -3,157 +3,73 @@
  * Provides nodes.slack.message.post(params) style calls with compile-time type checking.
  * Resource/operation discriminants are auto-injected by the factory.
  *
- * Types are defined inline to mirror generated/nodes.ts without pulling the
- * generated file into compilation (it has intentional duplicate properties
- * from n8n's conditional displayOptions schema).
+ * All param types are imported from generated/nodes.ts (produced by npm run generate).
  */
 
 import type { WorkflowNode } from '../builder/types.js';
+import type {
+  Expression,
+  ResourceLocator,
+  HttpRequestNode,
+  IfNode,
+  SetNode,
+  WebhookNode,
+  SlackMessagePost,
+  SlackMessageUpdate,
+  SlackMessageDelete,
+  SlackMessageSearch,
+  SlackMessageGetpermalink,
+  SlackChannelCreate,
+  SlackChannelArchive,
+  SlackChannelGet,
+  SlackChannelGetall,
+} from '../../generated/nodes.js';
+
+// Re-export shared utility types for downstream consumers
+export type { Expression, ResourceLocator };
 
 // ---------------------------------------------------------------------------
-// Shared utility types (mirrors generated Expression/ResourceLocator)
+// Param type aliases — strip resource/operation discriminants from Slack types
 // ---------------------------------------------------------------------------
 
-/** Expression wrapper for dynamic n8n expression values */
-export interface Expression<T> {
-  __expression: string;
-  __type?: T;
-}
+/** Parameters for the Webhook trigger node (all optional — n8n conditionally shows fields) */
+export type WebhookParams = Partial<WebhookNode>;
 
-/** Resource locator for n8n resource selection fields */
-export interface ResourceLocator {
-  __rl: true;
-  mode: 'list' | 'id' | 'name' | 'url';
-  value: string;
-  cachedResultName?: string;
-  cachedResultUrl?: string;
-}
-
-// ---------------------------------------------------------------------------
-// Simple node param types (webhook, httpRequest, if, set)
-// ---------------------------------------------------------------------------
-
-/** Parameters for the Webhook trigger node */
-export interface WebhookParams {
-  httpMethod?: 'DELETE' | 'GET' | 'HEAD' | 'PATCH' | 'POST' | 'PUT';
-  path?: string | Expression<string>;
-  authentication?: 'basicAuth' | 'headerAuth' | 'jwtAuth' | 'none';
-  responseMode?: 'onReceived' | 'lastNode' | 'responseNode';
-  responseCode?: number | Expression<number>;
-  responseData?: 'allEntries' | 'firstEntryJson' | 'firstEntryBinary' | 'noData';
-  options?: Record<string, unknown>;
-}
-
-/** Parameters for the HTTP Request node */
-export interface HttpRequestParams {
-  method?: 'DELETE' | 'GET' | 'HEAD' | 'OPTIONS' | 'PATCH' | 'POST' | 'PUT';
-  url: string | Expression<string>;
-  authentication?: 'none' | 'predefinedCredentialType' | 'genericCredentialType';
-  sendQuery?: boolean;
-  sendHeaders?: boolean;
-  sendBody?: boolean;
-  contentType?: 'form-urlencoded' | 'multipart-form-data' | 'json' | 'binaryData' | 'raw';
-  options?: Record<string, unknown>;
-  [key: string]: unknown;
-}
+/** Parameters for the HTTP Request node (all optional — n8n conditionally shows fields) */
+export type HttpRequestParams = Partial<HttpRequestNode> & { url: string | Expression<string> };
 
 /** Parameters for the IF node */
-export interface IfParams {
-  conditions?: unknown;
-  looseTypeValidation?: boolean | Expression<boolean>;
-  options?: { ignoreCase?: boolean | Expression<boolean>; looseTypeValidation?: boolean | Expression<boolean> };
-}
+export type IfParams = Partial<IfNode>;
 
 /** Parameters for the Set node */
-export interface SetParams {
-  mode?: 'manual' | 'raw';
-  duplicateItem?: boolean | Expression<boolean>;
-  duplicateCount?: number | Expression<number>;
-  fields?: { values?: { name?: string | Expression<string>; type?: 'stringValue' | 'numberValue' | 'booleanValue' | 'arrayValue' | 'objectValue'; stringValue?: string | Expression<string>; numberValue?: string | Expression<string>; booleanValue?: 'true' | 'false' }[] };
-  include?: 'all' | 'none' | 'selected' | 'except';
-  options?: Record<string, unknown>;
-  [key: string]: unknown;
-}
+export type SetParams = Partial<SetNode>;
 
-// ---------------------------------------------------------------------------
-// Slack param types (resource/operation stripped — factory injects them)
-// ---------------------------------------------------------------------------
-
-/** Slack message.post parameters */
-export interface SlackMessagePostParams {
-  authentication?: 'accessToken' | 'oAuth2';
-  select: 'channel' | 'user';
-  channelId: ResourceLocator | string;
-  user?: ResourceLocator | string;
-  messageType?: 'text' | 'block' | 'attachment';
-  text?: string | Expression<string>;
-  otherOptions?: Record<string, unknown>;
-  [key: string]: unknown;
-}
+/** Slack message.post parameters (resource/operation auto-injected by factory) */
+export type SlackMessagePostParams = Partial<Omit<SlackMessagePost, 'resource' | 'operation'>>;
 
 /** Slack message.update parameters */
-export interface SlackMessageUpdateParams {
-  authentication?: 'accessToken' | 'oAuth2';
-  channelId: ResourceLocator | string;
-  ts: number | Expression<number>;
-  text?: string | Expression<string>;
-  updateFields?: Record<string, unknown>;
-  [key: string]: unknown;
-}
+export type SlackMessageUpdateParams = Partial<Omit<SlackMessageUpdate, 'resource' | 'operation'>>;
 
 /** Slack message.delete parameters */
-export interface SlackMessageDeleteParams {
-  authentication?: 'accessToken' | 'oAuth2';
-  select: 'channel' | 'user';
-  channelId: ResourceLocator | string;
-  user?: ResourceLocator | string;
-  timestamp: number | Expression<number>;
-}
+export type SlackMessageDeleteParams = Partial<Omit<SlackMessageDelete, 'resource' | 'operation'>>;
 
 /** Slack message.search parameters */
-export interface SlackMessageSearchParams {
-  authentication?: 'accessToken' | 'oAuth2';
-  query: string | Expression<string>;
-  sort?: 'desc' | 'asc' | 'relevance';
-  returnAll?: boolean | Expression<boolean>;
-  limit?: number | Expression<number>;
-  options?: { searchChannel?: string[] };
-}
+export type SlackMessageSearchParams = Partial<Omit<SlackMessageSearch, 'resource' | 'operation'>>;
 
 /** Slack message.getPermalink parameters */
-export interface SlackMessageGetPermalinkParams {
-  authentication?: 'accessToken' | 'oAuth2';
-  channelId?: ResourceLocator | string;
-  timestamp: number | Expression<number>;
-}
+export type SlackMessageGetPermalinkParams = Partial<Omit<SlackMessageGetpermalink, 'resource' | 'operation'>>;
 
 /** Slack channel.create parameters */
-export interface SlackChannelCreateParams {
-  authentication?: 'accessToken' | 'oAuth2';
-  channelId: string | Expression<string>;
-  channelVisibility: 'public' | 'private';
-}
+export type SlackChannelCreateParams = Partial<Omit<SlackChannelCreate, 'resource' | 'operation'>>;
 
 /** Slack channel.archive parameters */
-export interface SlackChannelArchiveParams {
-  authentication?: 'accessToken' | 'oAuth2';
-  channelId?: ResourceLocator | string;
-}
+export type SlackChannelArchiveParams = Partial<Omit<SlackChannelArchive, 'resource' | 'operation'>>;
 
 /** Slack channel.get parameters */
-export interface SlackChannelGetParams {
-  authentication?: 'accessToken' | 'oAuth2';
-  channelId: ResourceLocator | string;
-  options?: { includeNumMembers?: boolean | Expression<boolean> };
-}
+export type SlackChannelGetParams = Partial<Omit<SlackChannelGet, 'resource' | 'operation'>>;
 
 /** Slack channel.getAll parameters */
-export interface SlackChannelGetAllParams {
-  authentication?: 'accessToken' | 'oAuth2';
-  returnAll?: boolean | Expression<boolean>;
-  limit?: number | Expression<number>;
-  filters?: { excludeArchived?: boolean | Expression<boolean>; types?: Array<'public_channel' | 'private_channel' | 'mpim' | 'im'> };
-}
+export type SlackChannelGetAllParams = Partial<Omit<SlackChannelGetall, 'resource' | 'operation'>>;
 
 // ---------------------------------------------------------------------------
 // TypedNodes interface hierarchy

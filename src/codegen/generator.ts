@@ -110,6 +110,56 @@ function extractNodeName(fullName: string): string {
 }
 
 /**
+ * Builds a deduplicated inline object type string from sub-properties.
+ */
+function buildInlineObjectType(subProps: any[]): string {
+  const rawFields = subProps.map((sp: any) => {
+    const optional = sp.required ? '' : '?';
+    return `${sp.name}${optional}: ${mapPropertyType(sp)}`;
+  });
+  const dedupedFields = deduplicateSubFields(rawFields);
+  return `{ ${dedupedFields.join('; ')} }`;
+}
+
+/**
+ * Deduplicates inline object field strings by property name.
+ */
+function deduplicateSubFields(fields: string[]): string[] {
+  const seen = new Map<string, { optional: boolean; types: Set<string>; order: number }>();
+  let order = 0;
+
+  for (const field of fields) {
+    const match = field.match(/^(\w+)(\??):\s*(.+)$/);
+    if (!match) {
+      seen.set(`__raw_${order}`, { optional: false, types: new Set([field]), order: order++ });
+      continue;
+    }
+    const [, name, optMarker, typeStr] = match;
+    const isOptional = optMarker === '?';
+    const existing = seen.get(name);
+    if (existing) {
+      existing.types.add(typeStr);
+      if (isOptional) existing.optional = true;
+    } else {
+      seen.set(name, { optional: isOptional, types: new Set([typeStr]), order: order++ });
+    }
+  }
+
+  const entries = [...seen.entries()].sort((a, b) => a[1].order - b[1].order);
+  const result: string[] = [];
+  for (const [key, entry] of entries) {
+    if (key.startsWith('__raw_')) {
+      result.push([...entry.types][0]);
+      continue;
+    }
+    const opt = entry.optional ? '?' : '';
+    const mergedType = [...entry.types].join(' | ');
+    result.push(`${key}${opt}: ${mergedType}`);
+  }
+  return result;
+}
+
+/**
  * Maps n8n property type to TypeScript type
  * This is a helper that delegates to the conditional.ts version for consistency
  */
@@ -156,12 +206,7 @@ function mapPropertyType(prop: any): string {
       break;
     case 'collection':
       if (prop.options && Array.isArray(prop.options)) {
-        const subProps = prop.options;
-        const fields = subProps.map((sp: any) => {
-          const optional = sp.required ? '' : '?';
-          return `${sp.name}${optional}: ${mapPropertyType(sp)}`;
-        }).join('; ');
-        baseType = `{ ${fields} }`;
+        baseType = buildInlineObjectType(prop.options);
       } else {
         baseType = 'Record<string, unknown>';
       }
@@ -169,22 +214,17 @@ function mapPropertyType(prop: any): string {
     case 'fixedCollection':
       if (prop.options && Array.isArray(prop.options)) {
         const groups = prop.options;
-        const groupFields = groups.map((group: any) => {
+        const dedupedGroupFields = deduplicateSubFields(groups.map((group: any) => {
           const optional = group.required ? '' : '?';
           let groupType = 'unknown';
 
           if (group.values && Array.isArray(group.values)) {
-            const subProps = group.values;
-            const fields = subProps.map((sp: any) => {
-              const spOptional = sp.required ? '' : '?';
-              return `${sp.name}${spOptional}: ${mapPropertyType(sp)}`;
-            }).join('; ');
-            groupType = `{ ${fields} }`;
+            groupType = buildInlineObjectType(group.values);
           }
 
           return `${group.name}${optional}: ${groupType}`;
-        }).join('; ');
-        baseType = `{ ${groupFields} }`;
+        }));
+        baseType = `{ ${dedupedGroupFields.join('; ')} }`;
       } else {
         baseType = 'Record<string, unknown>';
       }
