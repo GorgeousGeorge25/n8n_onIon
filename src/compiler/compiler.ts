@@ -44,7 +44,7 @@ export async function compileWorkflow(builder: WorkflowBuilder): Promise<N8nWork
       ? { ...node.parameters, onError: 'continueErrorOutput' }
       : node.parameters;
 
-    return {
+    const n8nNode: N8nNode = {
       id: randomUUID(),
       name: node.name,
       type: node.type,
@@ -52,6 +52,13 @@ export async function compileWorkflow(builder: WorkflowBuilder): Promise<N8nWork
       position: calculateGridPosition(index),
       parameters
     };
+
+    // Add credentials if present
+    if (node.credentials) {
+      n8nNode.credentials = node.credentials;
+    }
+
+    return n8nNode;
   });
 
   // Build connections object in n8n's nested format

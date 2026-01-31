@@ -23,6 +23,7 @@ export interface N8nNode {
   typeVersion: number; // Node type version (usually 1)
   position: [number, number]; // [x, y] canvas position
   parameters: Record<string, unknown>; // Node configuration
+  credentials?: Record<string, { id: string; name: string }>; // Credentials by type
 }
 
 /**
