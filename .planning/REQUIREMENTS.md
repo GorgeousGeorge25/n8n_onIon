@@ -33,17 +33,17 @@
 
 ### Compiler
 
-- [ ] **COMP-01**: Compiler produces structurally valid n8n workflow JSON
-- [ ] **COMP-02**: Auto-generates UUIDs for node IDs and webhook IDs
-- [ ] **COMP-03**: Auto-positions nodes in grid layout without overlap
-- [ ] **COMP-04**: Validates connections reference existing nodes with compatible outputs
+- [x] **COMP-01**: Compiler produces structurally valid n8n workflow JSON
+- [x] **COMP-02**: Auto-generates UUIDs for node IDs and webhook IDs
+- [x] **COMP-03**: Auto-positions nodes in grid layout without overlap
+- [x] **COMP-04**: Validates connections reference existing nodes with compatible outputs
 
 ### CLI
 
-- [ ] **CLI-01**: `n8n-sdk extract` pulls schemas from n8n instance
-- [ ] **CLI-02**: `n8n-sdk generate` creates TypeScript types from cached schemas
-- [ ] **CLI-03**: `n8n-sdk build` compiles workflow .ts file to n8n JSON
-- [ ] **CLI-04**: `n8n-sdk validate` checks workflow without compiling
+- [x] **CLI-01**: `n8n-sdk extract` pulls schemas from n8n instance
+- [x] **CLI-02**: `n8n-sdk generate` creates TypeScript types from cached schemas
+- [x] **CLI-03**: `n8n-sdk build` compiles workflow .ts file to n8n JSON
+- [x] **CLI-04**: `n8n-sdk validate` checks workflow without compiling
 
 ### Testing
 
@@ -108,14 +108,14 @@
 | BUILD-04 | Phase 2 | Complete |
 | EXPR-01 | Phase 2 | Complete |
 | EXPR-02 | Phase 2 | Complete |
-| COMP-01 | Phase 3 | Pending |
-| COMP-02 | Phase 3 | Pending |
-| COMP-03 | Phase 3 | Pending |
-| COMP-04 | Phase 3 | Pending |
-| CLI-01 | Phase 3 | Pending |
-| CLI-02 | Phase 3 | Pending |
-| CLI-03 | Phase 3 | Pending |
-| CLI-04 | Phase 3 | Pending |
+| COMP-01 | Phase 3 | Complete |
+| COMP-02 | Phase 3 | Complete |
+| COMP-03 | Phase 3 | Complete |
+| COMP-04 | Phase 3 | Complete |
+| CLI-01 | Phase 3 | Complete |
+| CLI-02 | Phase 3 | Complete |
+| CLI-03 | Phase 3 | Complete |
+| CLI-04 | Phase 3 | Complete |
 | TEST-01 | Phase 4 | Pending |
 | TEST-02 | Phase 4 | Pending |
 | NODE-01 | Phase 4 | Pending |

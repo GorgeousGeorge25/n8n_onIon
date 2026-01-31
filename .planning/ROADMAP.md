@@ -14,7 +14,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation** - Schema extraction and type generation
 - [x] **Phase 2: SDK Core** - Workflow builder and expression system
-- [ ] **Phase 3: Compilation** - Compiler and CLI tooling
+- [x] **Phase 3: Compilation** - Compiler and CLI tooling
 - [ ] **Phase 4: Validation** - Testing and node coverage
 
 ## Phase Details
@@ -81,8 +81,8 @@ Plans:
 **Plans:** 2 plans
 
 Plans:
-- [ ] 03-01-PLAN.md — Compiler core: types, layout, validation, compile function (TDD)
-- [ ] 03-02-PLAN.md — CLI build and validate commands
+- [x] 03-01-PLAN.md — Compiler core: types, layout, validation, compile function (TDD)
+- [x] 03-02-PLAN.md — CLI build and validate commands
 
 ### Phase 4: Validation
 **Goal**: Compiled workflows import and execute correctly in n8n on first try for all 5 target nodes
@@ -114,5 +114,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 |-------|----------------|--------|-----------|
 | 1. Foundation | 3/3 | ✓ Complete | 2026-01-31 |
 | 2. SDK Core | 2/2 | ✓ Complete | 2026-01-31 |
-| 3. Compilation | 0/2 | Not started | - |
+| 3. Compilation | 2/2 | ✓ Complete | 2026-01-31 |
 | 4. Validation | 0/TBD | Not started | - |
