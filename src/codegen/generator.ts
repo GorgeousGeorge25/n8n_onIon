@@ -67,7 +67,7 @@ export function generateNodeType(schema: N8nNodeType): string {
   for (const [name, entry] of sorted) {
     const opt = entry.optional ? '?' : '';
     const mergedType = [...entry.types].join(' | ');
-    fields.push(`  ${name}${opt}: ${mergedType};`);
+    fields.push(`  ${quotePropertyName(name)}${opt}: ${mergedType};`);
   }
 
   return `export interface ${nodeName}Node {\n${fields.join('\n')}\n}`;
@@ -106,7 +106,44 @@ export function generateNodeTypes(schemas: N8nNodeType[]): string {
 function extractNodeName(fullName: string): string {
   const parts = fullName.split('.');
   const name = parts[parts.length - 1];
-  return name.charAt(0).toUpperCase() + name.slice(1);
+  const baseName = name.charAt(0).toUpperCase() + name.slice(1);
+
+  // For non-base packages, prefix with package name to avoid collisions
+  // e.g., "@n8n/n8n-nodes-langchain.openAi" -> "LangchainOpenAi"
+  const pkg = parts.slice(0, -1).join('.');
+  if (pkg && pkg !== 'n8n-nodes-base') {
+    const pkgParts = pkg.replace(/^@\w+\//, '').replace(/^n8n-nodes-/, '');
+    const prefix = pkgParts.charAt(0).toUpperCase() + pkgParts.slice(1);
+    return prefix + baseName;
+  }
+
+  return baseName;
+}
+
+/**
+ * Checks if a property name is a valid JS identifier
+ */
+function isValidIdentifier(name: string): boolean {
+  return /^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(name);
+}
+
+/**
+ * Quotes a property name if it contains special characters
+ */
+function quotePropertyName(name: string): string {
+  return isValidIdentifier(name) ? name : `'${name.replace(/'/g, "\\'")}'`;
+}
+
+/**
+ * Escapes a string value for use in a TypeScript string literal
+ */
+function escapeStringLiteral(value: string): string {
+  return value
+    .replace(/\\/g, '\\\\')
+    .replace(/'/g, "\\'")
+    .replace(/\n/g, '\\n')
+    .replace(/\r/g, '\\r')
+    .replace(/\t/g, '\\t');
 }
 
 /**
@@ -115,7 +152,7 @@ function extractNodeName(fullName: string): string {
 function buildInlineObjectType(subProps: any[]): string {
   const rawFields = subProps.map((sp: any) => {
     const optional = sp.required ? '' : '?';
-    return `${sp.name}${optional}: ${mapPropertyType(sp)}`;
+    return `${quotePropertyName(sp.name)}${optional}: ${mapPropertyType(sp)}`;
   });
   const dedupedFields = deduplicateSubFields(rawFields);
   return `{ ${dedupedFields.join('; ')} }`;
@@ -125,23 +162,23 @@ function buildInlineObjectType(subProps: any[]): string {
  * Deduplicates inline object field strings by property name.
  */
 function deduplicateSubFields(fields: string[]): string[] {
-  const seen = new Map<string, { optional: boolean; types: Set<string>; order: number }>();
+  const seen = new Map<string, { quotedName: string; optional: boolean; types: Set<string>; order: number }>();
   let order = 0;
 
   for (const field of fields) {
-    const match = field.match(/^(\w+)(\??):\s*(.+)$/);
+    const match = field.match(/^('(?:[^'\\]|\\.)*'|\w+)(\??):\s*(.+)$/);
     if (!match) {
-      seen.set(`__raw_${order}`, { optional: false, types: new Set([field]), order: order++ });
+      seen.set(`__raw_${order}`, { quotedName: '', optional: false, types: new Set([field]), order: order++ });
       continue;
     }
-    const [, name, optMarker, typeStr] = match;
+    const [, rawName, optMarker, typeStr] = match;
     const isOptional = optMarker === '?';
-    const existing = seen.get(name);
+    const existing = seen.get(rawName);
     if (existing) {
       existing.types.add(typeStr);
       if (isOptional) existing.optional = true;
     } else {
-      seen.set(name, { optional: isOptional, types: new Set([typeStr]), order: order++ });
+      seen.set(rawName, { quotedName: rawName, optional: isOptional, types: new Set([typeStr]), order: order++ });
     }
   }
 
@@ -154,7 +191,7 @@ function deduplicateSubFields(fields: string[]): string[] {
     }
     const opt = entry.optional ? '?' : '';
     const mergedType = [...entry.types].join(' | ');
-    result.push(`${key}${opt}: ${mergedType}`);
+    result.push(`${entry.quotedName}${opt}: ${mergedType}`);
   }
   return result;
 }
@@ -184,7 +221,7 @@ function mapPropertyType(prop: any): string {
     case 'options':
       if (prop.options && Array.isArray(prop.options)) {
         const values = prop.options
-          .map((o: any) => typeof o.value === 'string' ? `'${o.value}'` : o.value)
+          .map((o: any) => typeof o.value === 'string' ? `'${escapeStringLiteral(o.value)}'` : o.value)
           .join(' | ');
         baseType = values || 'string';
       } else {
@@ -194,7 +231,7 @@ function mapPropertyType(prop: any): string {
     case 'multiOptions':
       if (prop.options && Array.isArray(prop.options)) {
         const values = prop.options
-          .map((o: any) => typeof o.value === 'string' ? `'${o.value}'` : o.value)
+          .map((o: any) => typeof o.value === 'string' ? `'${escapeStringLiteral(o.value)}'` : o.value)
           .join(' | ');
         baseType = `Array<${values || 'string'}>`;
       } else {
@@ -222,7 +259,7 @@ function mapPropertyType(prop: any): string {
             groupType = buildInlineObjectType(group.values);
           }
 
-          return `${group.name}${optional}: ${groupType}`;
+          return `${quotePropertyName(group.name)}${optional}: ${groupType}`;
         }));
         baseType = `{ ${dedupedGroupFields.join('; ')} }`;
       } else {

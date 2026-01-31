@@ -14,7 +14,9 @@ const CACHE_DIR = 'schemas';
  * @returns Filename - e.g., "n8n-nodes-base.slack.json"
  */
 function nodeTypeToFilename(nodeTypeName: string): string {
-  return `${nodeTypeName}.json`;
+  // Replace path separators to avoid creating subdirectories
+  // e.g., "@n8n/n8n-nodes-langchain.anthropic" -> "@n8n__n8n-nodes-langchain.anthropic.json"
+  return `${nodeTypeName.replace(/\//g, '__')}.json`;
 }
 
 /**
@@ -23,7 +25,7 @@ function nodeTypeToFilename(nodeTypeName: string): string {
  * @returns Node type name - e.g., "n8n-nodes-base.slack"
  */
 function filenameToNodeType(filename: string): string {
-  return filename.replace(/\.json$/, '');
+  return filename.replace(/\.json$/, '').replace(/__/g, '/');
 }
 
 /**

@@ -137,32 +137,30 @@ export function deduplicateProperties(properties: N8nProperty[]): N8nProperty[] 
  * When the same property name appears with different types, merges into a union type.
  */
 function deduplicateFields(fields: string[]): string[] {
-  const seen = new Map<string, { optional: boolean; types: Set<string>; order: number }>();
+  const seen = new Map<string, { quotedName: string; optional: boolean; types: Set<string>; order: number }>();
   let order = 0;
 
   for (const field of fields) {
-    // Parse field: "  name?: type;" or "  name: type;"
-    const match = field.match(/^  (\w+)(\??):\s*(.+);$/);
+    // Parse field: "  name?: type;" or "  'quoted-name'?: type;"
+    const match = field.match(/^  ('(?:[^'\\]|\\.)*'|\w+)(\??):\s*(.+);$/);
     if (!match) {
       // Can't parse (e.g., discriminant literal), keep as-is via special key
-      seen.set(`__raw_${order}`, { optional: false, types: new Set([field]), order: order++ });
+      seen.set(`__raw_${order}`, { quotedName: '', optional: false, types: new Set([field]), order: order++ });
       continue;
     }
 
-    const [, name, optMarker, typeStr] = match;
+    const [, rawName, optMarker, typeStr] = match;
     const isOptional = optMarker === '?';
 
-    const existing = seen.get(name);
+    const existing = seen.get(rawName);
     if (existing) {
       existing.types.add(typeStr);
-      // Property is optional if ANY occurrence is optional
       if (isOptional) existing.optional = true;
     } else {
-      seen.set(name, { optional: isOptional, types: new Set([typeStr]), order: order++ });
+      seen.set(rawName, { quotedName: rawName, optional: isOptional, types: new Set([typeStr]), order: order++ });
     }
   }
 
-  // Reconstruct fields in original order
   const entries = [...seen.entries()].sort((a, b) => a[1].order - b[1].order);
   const result: string[] = [];
 
@@ -173,7 +171,7 @@ function deduplicateFields(fields: string[]): string[] {
     }
     const opt = entry.optional ? '?' : '';
     const mergedType = [...entry.types].join(' | ');
-    result.push(`  ${key}${opt}: ${mergedType};`);
+    result.push(`  ${entry.quotedName}${opt}: ${mergedType};`);
   }
 
   return result;
@@ -237,7 +235,7 @@ export function buildDiscriminatedUnions(
 function generatePropertyType(prop: N8nProperty): string {
   const optional = prop.required ? '' : '?';
   const tsType = mapPropertyType(prop);
-  return `  ${prop.name}${optional}: ${tsType};`;
+  return `  ${quotePropertyName(prop.name)}${optional}: ${tsType};`;
 }
 
 /**
@@ -247,7 +245,7 @@ function generatePropertyType(prop: N8nProperty): string {
 function buildInlineObjectType(subProps: N8nProperty[]): string {
   const rawFields = subProps.map(sp => {
     const optional = sp.required ? '' : '?';
-    return `${sp.name}${optional}: ${mapPropertyType(sp)}`;
+    return `${quotePropertyName(sp.name)}${optional}: ${mapPropertyType(sp)}`;
   });
   const dedupedFields = deduplicateSubFields(rawFields);
   return `{ ${dedupedFields.join('; ')} }`;
@@ -259,23 +257,24 @@ function buildInlineObjectType(subProps: N8nProperty[]): string {
  * Output: ["name?: string | number", "other: boolean"]
  */
 function deduplicateSubFields(fields: string[]): string[] {
-  const seen = new Map<string, { optional: boolean; types: Set<string>; order: number }>();
+  const seen = new Map<string, { quotedName: string; optional: boolean; types: Set<string>; order: number }>();
   let order = 0;
 
   for (const field of fields) {
-    const match = field.match(/^(\w+)(\??):\s*(.+)$/);
+    // Match both plain identifiers and quoted property names
+    const match = field.match(/^('(?:[^'\\]|\\.)*'|\w+)(\??):\s*(.+)$/);
     if (!match) {
-      seen.set(`__raw_${order}`, { optional: false, types: new Set([field]), order: order++ });
+      seen.set(`__raw_${order}`, { quotedName: '', optional: false, types: new Set([field]), order: order++ });
       continue;
     }
-    const [, name, optMarker, typeStr] = match;
+    const [, rawName, optMarker, typeStr] = match;
     const isOptional = optMarker === '?';
-    const existing = seen.get(name);
+    const existing = seen.get(rawName);
     if (existing) {
       existing.types.add(typeStr);
       if (isOptional) existing.optional = true;
     } else {
-      seen.set(name, { optional: isOptional, types: new Set([typeStr]), order: order++ });
+      seen.set(rawName, { quotedName: rawName, optional: isOptional, types: new Set([typeStr]), order: order++ });
     }
   }
 
@@ -288,7 +287,7 @@ function deduplicateSubFields(fields: string[]): string[] {
     }
     const opt = entry.optional ? '?' : '';
     const mergedType = [...entry.types].join(' | ');
-    result.push(`${key}${opt}: ${mergedType}`);
+    result.push(`${entry.quotedName}${opt}: ${mergedType}`);
   }
   return result;
 }
@@ -316,7 +315,7 @@ function mapPropertyType(prop: N8nProperty): string {
       // Generate literal union from options
       if (prop.options && Array.isArray(prop.options)) {
         const values = (prop.options as Array<{ value: string | number | boolean }>)
-          .map(o => typeof o.value === 'string' ? `'${o.value}'` : o.value)
+          .map(o => typeof o.value === 'string' ? `'${escapeStringLiteral(o.value)}'` : o.value)
           .join(' | ');
         baseType = values || 'string';
       } else {
@@ -327,7 +326,7 @@ function mapPropertyType(prop: N8nProperty): string {
       // Array of literal union
       if (prop.options && Array.isArray(prop.options)) {
         const values = (prop.options as Array<{ value: string | number | boolean }>)
-          .map(o => typeof o.value === 'string' ? `'${o.value}'` : o.value)
+          .map(o => typeof o.value === 'string' ? `'${escapeStringLiteral(o.value)}'` : o.value)
           .join(' | ');
         baseType = `Array<${values || 'string'}>`;
       } else {
@@ -357,7 +356,7 @@ function mapPropertyType(prop: N8nProperty): string {
             groupType = buildInlineObjectType(group.values);
           }
 
-          return `${group.name}${optional}: ${groupType}`;
+          return `${quotePropertyName(group.name)}${optional}: ${groupType}`;
         }));
         baseType = `{ ${dedupedGroups.join('; ')} }`;
       } else {
@@ -384,4 +383,30 @@ function pascalCase(str: string): string {
     .split(/[\s-_]+/)
     .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
     .join('');
+}
+
+/**
+ * Checks if a property name is a valid JS identifier (doesn't need quoting)
+ */
+function isValidIdentifier(name: string): boolean {
+  return /^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(name);
+}
+
+/**
+ * Quotes a property name if it contains special characters
+ */
+function quotePropertyName(name: string): string {
+  return isValidIdentifier(name) ? name : `'${name.replace(/'/g, "\\'")}'`;
+}
+
+/**
+ * Escapes a string value for use in a TypeScript string literal
+ */
+function escapeStringLiteral(value: string): string {
+  return value
+    .replace(/\\/g, '\\\\')
+    .replace(/'/g, "\\'")
+    .replace(/\n/g, '\\n')
+    .replace(/\r/g, '\\r')
+    .replace(/\t/g, '\\t');
 }

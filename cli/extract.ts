@@ -4,7 +4,7 @@
  */
 
 import 'dotenv/config';
-import { extractNodeTypes } from '../src/schema/extractor.js';
+import { extractNodeTypes, extractAllNodeTypes } from '../src/schema/extractor.js';
 import { writeSchema } from '../src/schema/cache.js';
 
 // Default v1 scope nodes
@@ -19,23 +19,20 @@ const DEFAULT_NODE_TYPES = [
 async function main() {
   const args = process.argv.slice(2);
 
-  let nodeTypes: string[];
-
-  if (args.includes('--all')) {
-    console.error('--all flag not yet implemented. Using default node list.');
-    nodeTypes = DEFAULT_NODE_TYPES;
-  } else if (args.length > 0) {
-    // Use provided node type names
-    nodeTypes = args.filter(arg => !arg.startsWith('--'));
-  } else {
-    // Use default list
-    nodeTypes = DEFAULT_NODE_TYPES;
-  }
-
-  console.log(`Extracting ${nodeTypes.length} node schemas...`);
-
   try {
-    const schemas = await extractNodeTypes(nodeTypes);
+    let schemas;
+
+    if (args.includes('--all')) {
+      console.log('Extracting all node schemas from n8n...');
+      schemas = await extractAllNodeTypes();
+    } else {
+      const nodeTypes = args.length > 0
+        ? args.filter(arg => !arg.startsWith('--'))
+        : DEFAULT_NODE_TYPES;
+
+      console.log(`Extracting ${nodeTypes.length} node schemas...`);
+      schemas = await extractNodeTypes(nodeTypes);
+    }
 
     for (const schema of schemas) {
       await writeSchema(schema);

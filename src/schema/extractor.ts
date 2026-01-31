@@ -177,17 +177,46 @@ export async function extractNodeTypes(nodeTypes: string[]): Promise<N8nNodeType
 }
 
 /**
- * Lists all available node types from the n8n instance
- * @returns Array of node type names
+ * Fetches all node type schemas from the n8n REST API
+ * @returns Array of all node type schemas
  */
-export async function listAvailableNodeTypes(): Promise<string[]> {
-  // For v1 scope, return hardcoded list of supported nodes
-  // This is simpler and more reliable than querying the API
-  return [
-    'n8n-nodes-base.webhook',
-    'n8n-nodes-base.httpRequest',
-    'n8n-nodes-base.slack',
-    'n8n-nodes-base.if',
-    'n8n-nodes-base.set',
-  ];
+export async function extractAllNodeTypes(): Promise<N8nNodeType[]> {
+  const apiUrl = process.env.N8N_API_URL || 'http://localhost:5678';
+  const sessionCookie = await authenticateSession();
+
+  const url = `${apiUrl}/types/nodes.json`;
+
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: {
+      'Cookie': sessionCookie,
+    },
+  });
+
+  if (response.status === 401) {
+    throw new Error('Authentication failed: Session expired or invalid credentials');
+  }
+
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+  }
+
+  const allNodes = await response.json();
+
+  if (!Array.isArray(allNodes)) {
+    throw new Error(`Unexpected response format: expected array, got ${typeof allNodes}`);
+  }
+
+  // Deduplicate by name, keeping the first occurrence of each node type
+  const seen = new Set<string>();
+  const schemas: N8nNodeType[] = [];
+
+  for (const node of allNodes) {
+    if (node.name && !seen.has(node.name)) {
+      seen.add(node.name);
+      schemas.push(node as N8nNodeType);
+    }
+  }
+
+  return schemas;
 }
