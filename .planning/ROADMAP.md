@@ -78,10 +78,11 @@ Plans:
   7. CLI `build` command compiles workflow .ts files to n8n JSON
   8. CLI `validate` command checks workflow structure without full compilation
 
-**Plans**: TBD
+**Plans:** 2 plans
 
 Plans:
-- [ ] TBD during planning
+- [ ] 03-01-PLAN.md — Compiler core: types, layout, validation, compile function (TDD)
+- [ ] 03-02-PLAN.md — CLI build and validate commands
 
 ### Phase 4: Validation
 **Goal**: Compiled workflows import and execute correctly in n8n on first try for all 5 target nodes
@@ -113,5 +114,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 |-------|----------------|--------|-----------|
 | 1. Foundation | 3/3 | ✓ Complete | 2026-01-31 |
 | 2. SDK Core | 2/2 | ✓ Complete | 2026-01-31 |
-| 3. Compilation | 0/TBD | Not started | - |
+| 3. Compilation | 0/2 | Not started | - |
 | 4. Validation | 0/TBD | Not started | - |
