@@ -9,6 +9,8 @@
     "build": "tsc",
     "extract": "tsx cli/extract.ts",
     "generate": "tsx cli/generate.ts",
+    "build-workflow": "tsx cli/build.ts",
+    "validate": "tsx cli/validate.ts",
     "test": "vitest run"
   },
   "devDependencies": {
