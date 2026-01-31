@@ -24,10 +24,28 @@ Compiled workflows import and execute correctly in n8n on the first try — targ
 - v1 node coverage: Webhook, HTTP Request, Slack, IF, Set — v1.0
 - Snapshot tests compare compiled output against known-good n8n JSON — v1.0
 - Integration tests import compiled workflows into n8n via API — v1.0
+- Full schema extraction: 797 node schemas cached (687 base + 110 LangChain) — post-v1.0
+- Type generation for all 797 nodes: generated/nodes.ts (64,512 lines) — post-v1.0
 
 ### Active
 
-(None yet — define for next milestone)
+- [ ] SKILL.md — Claude skill reference for SDK usage (project root)
+- [ ] docs/README.md — Overview and quick start guide
+- [ ] docs/INSTALLATION.md — Setup and environment configuration
+- [ ] docs/API.md — Full API reference with typed parameters
+- [ ] docs/GUIDES.md — Step-by-step tutorials (5 guides)
+- [ ] docs/EXAMPLES.md — Complete copy-paste workflow examples (6 examples)
+- [ ] docs/TROUBLESHOOTING.md — Common issues and solutions
+- [ ] docs/NODES.md — Working with node types and interfaces
+
+## Current Milestone: v1.1 Documentation
+
+**Goal:** Comprehensive documentation for both Claude (SKILL.md) and human developers (docs/) so the SDK is usable without reading source code.
+
+**Target features:**
+- SKILL.md skill file for Claude with full API reference, patterns, and tips
+- User-facing docs with installation, API reference, tutorials, examples, troubleshooting
+- Complete code examples that compile and produce valid n8n JSON
 
 ### Out of Scope
 
@@ -39,6 +57,7 @@ Compiled workflows import and execute correctly in n8n on the first try — targ
 
 - n8n instance running locally at http://localhost:5678 (Docker, version 2.33.1) with API key access
 - Shipped v1.0 with 5,047 LOC TypeScript, 61 tests, 5 target nodes
+- Post-v1.0: extracted all 797 node schemas from n8n instance (687 n8n-nodes-base + 110 n8n-nodes-langchain) and generated types for all of them (64,512 lines in generated/nodes.ts)
 - Architecture proven: schema extraction -> type generation -> builder -> compiler -> valid n8n JSON
 - Typed node API provides `nodes.slack.message.post(params)` with compile-time checking
 - n8n node schemas use `displayOptions.show` for conditional property visibility — solved with discriminated unions
@@ -50,7 +69,7 @@ Compiled workflows import and execute correctly in n8n on the first try — targ
 - **Data source**: Schema extraction via n8n REST API (`/types/nodes.json` with session auth) and MCP tools for development
 - **Type strategy**: Discriminated unions for resource/operation branching at the type level
 - **Testing**: Both snapshot tests (fast iteration) and n8n API import tests (confidence)
-- **Node scope**: 5 nodes shipped in v1 (Webhook, HTTP Request, Slack, IF, Set)
+- **Node scope**: 5 nodes builder-tested in v1; 797 schemas extracted and typed (687 base + 110 LangChain)
 
 ## Key Decisions
 
@@ -68,4 +87,4 @@ Compiled workflows import and execute correctly in n8n on the first try — targ
 | API key auth for integration tests | n8n public API v1 requires X-N8N-API-KEY header | Good — works with Docker n8n |
 
 ---
-*Last updated: 2026-01-31 after v1.0 milestone*
+*Last updated: 2026-01-31 after v1.1 milestone start*
