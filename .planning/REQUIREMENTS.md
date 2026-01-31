@@ -21,15 +21,15 @@
 
 ### Workflow Builder
 
-- [ ] **BUILD-01**: `workflow(name)` creates a workflow context
-- [ ] **BUILD-02**: `wf.trigger()` adds a trigger node with typed parameters
-- [ ] **BUILD-03**: `wf.node()` adds an action node with typed parameters
-- [ ] **BUILD-04**: `wf.connect()` links nodes with type-checked references
+- [x] **BUILD-01**: `workflow(name)` creates a workflow context
+- [x] **BUILD-02**: `wf.trigger()` adds a trigger node with typed parameters
+- [x] **BUILD-03**: `wf.node()` adds an action node with typed parameters
+- [x] **BUILD-04**: `wf.connect()` links nodes with type-checked references
 
 ### Expressions
 
-- [ ] **EXPR-01**: Node output references compile to `$node['Name'].json.field` syntax
-- [ ] **EXPR-02**: Template literals compile to n8n string concatenation expressions
+- [x] **EXPR-01**: Node output references compile to `$node['Name'].json.field` syntax
+- [x] **EXPR-02**: Template literals compile to n8n string concatenation expressions
 
 ### Compiler
 
@@ -102,12 +102,12 @@
 | TYGEN-03 | Phase 1 | Complete |
 | TYGEN-04 | Phase 1 | Complete |
 | TYGEN-05 | Phase 1 | Complete |
-| BUILD-01 | Phase 2 | Pending |
-| BUILD-02 | Phase 2 | Pending |
-| BUILD-03 | Phase 2 | Pending |
-| BUILD-04 | Phase 2 | Pending |
-| EXPR-01 | Phase 2 | Pending |
-| EXPR-02 | Phase 2 | Pending |
+| BUILD-01 | Phase 2 | Complete |
+| BUILD-02 | Phase 2 | Complete |
+| BUILD-03 | Phase 2 | Complete |
+| BUILD-04 | Phase 2 | Complete |
+| EXPR-01 | Phase 2 | Complete |
+| EXPR-02 | Phase 2 | Complete |
 | COMP-01 | Phase 3 | Pending |
 | COMP-02 | Phase 3 | Pending |
 | COMP-03 | Phase 3 | Pending |

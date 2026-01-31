@@ -13,7 +13,7 @@ This roadmap transforms n8n workflow JSON authoring from error-prone manual edit
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation** - Schema extraction and type generation
-- [ ] **Phase 2: SDK Core** - Workflow builder and expression system
+- [x] **Phase 2: SDK Core** - Workflow builder and expression system
 - [ ] **Phase 3: Compilation** - Compiler and CLI tooling
 - [ ] **Phase 4: Validation** - Testing and node coverage
 
@@ -58,8 +58,8 @@ Plans:
 **Plans:** 2 plans
 
 Plans:
-- [ ] 02-01-PLAN.md — Expression system: node output references and template literals (TDD)
-- [ ] 02-02-PLAN.md — Workflow builder: workflow(), trigger(), node(), connect() (TDD)
+- [x] 02-01-PLAN.md — Expression system: node output references and template literals (TDD)
+- [x] 02-02-PLAN.md — Workflow builder: workflow(), trigger(), node(), connect() (TDD)
 
 ### Phase 3: Compilation
 **Goal**: TypeScript workflow code compiles to structurally valid, importable n8n JSON
@@ -112,6 +112,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 3/3 | ✓ Complete | 2026-01-31 |
-| 2. SDK Core | 0/2 | Not started | - |
+| 2. SDK Core | 2/2 | ✓ Complete | 2026-01-31 |
 | 3. Compilation | 0/TBD | Not started | - |
 | 4. Validation | 0/TBD | Not started | - |
