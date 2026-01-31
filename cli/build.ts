@@ -32,7 +32,7 @@ async function main() {
     }
 
     // Compile workflow
-    const json = compileWorkflow(builder);
+    const json = await compileWorkflow(builder);
 
     // Write JSON output
     writeFileSync(outputPath, JSON.stringify(json, null, 2), 'utf-8');
@@ -40,7 +40,7 @@ async function main() {
     // Success summary
     const nodeCount = json.nodes.length;
     const connectionCount = Object.values(json.connections).reduce(
-      (sum, conn) => sum + conn.main.flat().length,
+      (sum, conn) => sum + ((conn.main?.flat().length ?? 0) + (conn.error?.flat().length ?? 0)),
       0
     );
 

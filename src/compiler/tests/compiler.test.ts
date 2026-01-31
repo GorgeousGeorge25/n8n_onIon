@@ -11,7 +11,7 @@ import type { WorkflowConnection } from '../../builder/types.js';
 
 describe('Compiler', () => {
   describe('compileWorkflow', () => {
-    it('should produce valid n8n workflow structure with basic nodes', () => {
+    it('should produce valid n8n workflow structure with basic nodes', async () => {
       // Create a simple workflow: trigger -> action
       const wf = workflow('Test Workflow');
       const trigger = wf.trigger('Start', 'n8n-nodes-base.manualTrigger', {});
@@ -21,7 +21,7 @@ describe('Compiler', () => {
       });
       wf.connect(trigger, action);
 
-      const result: N8nWorkflow = compileWorkflow(wf);
+      const result: N8nWorkflow = await compileWorkflow(wf);
 
       // Verify basic structure
       expect(result.name).toBe('Test Workflow');
@@ -49,14 +49,14 @@ describe('Compiler', () => {
       expect(Array.isArray(result.connections['Start'].main)).toBe(true);
     });
 
-    it('should generate unique UUIDs for all nodes', () => {
+    it('should generate unique UUIDs for all nodes', async () => {
       const wf = workflow('UUID Test');
       wf.trigger('Node1', 'n8n-nodes-base.manualTrigger', {});
       wf.node('Node2', 'n8n-nodes-base.slack', {});
       wf.node('Node3', 'n8n-nodes-base.http', {});
       wf.node('Node4', 'n8n-nodes-base.code', {});
 
-      const result = compileWorkflow(wf);
+      const result = await compileWorkflow(wf);
 
       const ids = result.nodes.map(n => n.id);
       const uniqueIds = new Set(ids);
@@ -65,7 +65,7 @@ describe('Compiler', () => {
       expect(ids.length).toBe(4);
     });
 
-    it('should assign non-overlapping grid positions', () => {
+    it('should assign non-overlapping grid positions', async () => {
       const wf = workflow('Layout Test');
       wf.trigger('N1', 'n8n-nodes-base.manualTrigger', {});
       wf.node('N2', 'n8n-nodes-base.slack', {});
@@ -73,7 +73,7 @@ describe('Compiler', () => {
       wf.node('N4', 'n8n-nodes-base.code', {});
       wf.node('N5', 'n8n-nodes-base.webhook', {});
 
-      const result = compileWorkflow(wf);
+      const result = await compileWorkflow(wf);
 
       const positions = result.nodes.map(n => `${n.position[0]},${n.position[1]}`);
       const uniquePositions = new Set(positions);
@@ -82,7 +82,7 @@ describe('Compiler', () => {
       expect(positions.length).toBe(5);
     });
 
-    it('should transform connections to n8n nested format', () => {
+    it('should transform connections to n8n nested format', async () => {
       const wf = workflow('Connection Test');
       const a = wf.trigger('A', 'n8n-nodes-base.manualTrigger', {});
       const b = wf.node('B', 'n8n-nodes-base.slack', {});
@@ -93,35 +93,35 @@ describe('Compiler', () => {
       // A connects to C on output 1 (e.g., IF node false branch)
       wf.connect(a, c, 1);
 
-      const result = compileWorkflow(wf);
+      const result = await compileWorkflow(wf);
 
       // Verify connection structure
       expect(result.connections).toHaveProperty('A');
       expect(result.connections['A'].main).toHaveLength(2); // Two output branches
-      expect(Array.isArray(result.connections['A'].main[0])).toBe(true);
-      expect(Array.isArray(result.connections['A'].main[1])).toBe(true);
+      expect(Array.isArray(result.connections['A'].main![0])).toBe(true);
+      expect(Array.isArray(result.connections['A'].main![1])).toBe(true);
 
       // Verify output 0 -> B
-      expect(result.connections['A'].main[0]).toHaveLength(1);
-      expect(result.connections['A'].main[0][0]).toEqual({
+      expect(result.connections['A'].main![0]).toHaveLength(1);
+      expect(result.connections['A'].main![0][0]).toEqual({
         node: 'B',
         type: 'main',
         index: 0
       });
 
       // Verify output 1 -> C
-      expect(result.connections['A'].main[1]).toHaveLength(1);
-      expect(result.connections['A'].main[1][0]).toEqual({
+      expect(result.connections['A'].main![1]).toHaveLength(1);
+      expect(result.connections['A'].main![1][0]).toEqual({
         node: 'C',
         type: 'main',
         index: 0
       });
     });
 
-    it('should handle empty workflows', () => {
+    it('should handle empty workflows', async () => {
       const wf = workflow('Empty Workflow');
 
-      const result = compileWorkflow(wf);
+      const result = await compileWorkflow(wf);
 
       expect(result.name).toBe('Empty Workflow');
       expect(result.nodes).toEqual([]);
@@ -130,7 +130,7 @@ describe('Compiler', () => {
       expect(result.settings).toEqual({});
     });
 
-    it('should pass through expression values unchanged', () => {
+    it('should pass through expression values unchanged', async () => {
       const wf = workflow('Expression Test');
       const trigger = wf.trigger('Start', 'n8n-nodes-base.manualTrigger', {});
       const action = wf.node('Process', 'n8n-nodes-base.code', {
@@ -139,7 +139,7 @@ describe('Compiler', () => {
       });
       wf.connect(trigger, action);
 
-      const result = compileWorkflow(wf);
+      const result = await compileWorkflow(wf);
 
       const processNode = result.nodes.find(n => n.name === 'Process');
       expect(processNode).toBeDefined();

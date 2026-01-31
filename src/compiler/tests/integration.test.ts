@@ -118,7 +118,7 @@ describe('Integration Tests — n8n Workflow Import', () => {
     });
     wf.connect(webhook, setNode);
 
-    const compiled = compileWorkflow(wf);
+    const compiled = await compileWorkflow(wf);
     const { status, body } = await importWorkflow(compiled);
 
     expect(status === 200 || status === 201).toBe(true);
@@ -140,7 +140,7 @@ describe('Integration Tests — n8n Workflow Import', () => {
     });
     wf.connect(trigger, httpReq);
 
-    const compiled = compileWorkflow(wf);
+    const compiled = await compileWorkflow(wf);
     const { status, body } = await importWorkflow(compiled);
 
     expect(status === 200 || status === 201).toBe(true);
@@ -165,7 +165,7 @@ describe('Integration Tests — n8n Workflow Import', () => {
     });
     wf.connect(webhook, slack);
 
-    const compiled = compileWorkflow(wf);
+    const compiled = await compileWorkflow(wf);
     const { status, body } = await importWorkflow(compiled);
 
     expect(status === 200 || status === 201).toBe(true);
@@ -199,7 +199,7 @@ describe('Integration Tests — n8n Workflow Import', () => {
     wf.connect(ifNode, trueNode, 0);
     wf.connect(ifNode, falseNode, 1);
 
-    const compiled = compileWorkflow(wf);
+    const compiled = await compileWorkflow(wf);
     const { status, body } = await importWorkflow(compiled);
 
     expect(status === 200 || status === 201).toBe(true);
@@ -224,7 +224,7 @@ describe('Integration Tests — n8n Workflow Import', () => {
     });
     wf.connect(trigger, setNode);
 
-    const compiled = compileWorkflow(wf);
+    const compiled = await compileWorkflow(wf);
     const { status, body } = await importWorkflow(compiled);
 
     expect(status === 200 || status === 201).toBe(true);

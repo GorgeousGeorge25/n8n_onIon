@@ -32,7 +32,10 @@ export interface N8nNode {
 export interface N8nWorkflow {
   name: string; // Workflow name
   nodes: N8nNode[]; // All nodes in the workflow
-  connections: Record<string, { main: Array<Array<N8nConnection>> }>; // Nested connection format
+  connections: Record<string, {
+    main?: Array<Array<N8nConnection>>;
+    error?: Array<Array<N8nConnection>>;
+  }>; // Nested connection format with main and error types
   active: boolean; // Whether workflow is active
   settings: Record<string, unknown>; // Workflow settings
 }

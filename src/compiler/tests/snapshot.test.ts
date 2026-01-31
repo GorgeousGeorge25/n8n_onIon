@@ -24,7 +24,7 @@ function normalizeUUIDs(result: N8nWorkflow): N8nWorkflow {
 describe('Snapshot Tests', () => {
 
   // NODE-01: Webhook trigger
-  it('should compile Webhook workflow', () => {
+  it('should compile Webhook workflow', async () => {
     const wf = workflow('Webhook Test');
     const webhook = wf.trigger('Webhook', 'n8n-nodes-base.webhook', {
       httpMethod: 'POST',
@@ -37,7 +37,7 @@ describe('Snapshot Tests', () => {
     });
     wf.connect(webhook, setNode);
 
-    const result = compileWorkflow(wf);
+    const result = await compileWorkflow(wf);
     const normalized = normalizeUUIDs(result);
 
     // Structural assertions
@@ -50,7 +50,7 @@ describe('Snapshot Tests', () => {
   });
 
   // NODE-02: HTTP Request
-  it('should compile HTTP Request workflow', () => {
+  it('should compile HTTP Request workflow', async () => {
     const wf = workflow('HTTP Request Test');
     const trigger = wf.trigger('Manual Trigger', 'n8n-nodes-base.manualTrigger', {});
     const httpReq = wf.node('HTTP Request', 'n8n-nodes-base.httpRequest', {
@@ -61,7 +61,7 @@ describe('Snapshot Tests', () => {
     });
     wf.connect(trigger, httpReq);
 
-    const result = compileWorkflow(wf);
+    const result = await compileWorkflow(wf);
     const normalized = normalizeUUIDs(result);
 
     // Structural assertions
@@ -74,7 +74,7 @@ describe('Snapshot Tests', () => {
   });
 
   // NODE-03: Slack with expression
-  it('should compile Slack workflow with expression', () => {
+  it('should compile Slack workflow with expression', async () => {
     const wf = workflow('Slack Test');
     const webhook = wf.trigger('Webhook', 'n8n-nodes-base.webhook', {
       httpMethod: 'POST',
@@ -88,7 +88,7 @@ describe('Snapshot Tests', () => {
     });
     wf.connect(webhook, slack);
 
-    const result = compileWorkflow(wf);
+    const result = await compileWorkflow(wf);
     const normalized = normalizeUUIDs(result);
 
     // Structural assertions
@@ -103,7 +103,7 @@ describe('Snapshot Tests', () => {
   });
 
   // NODE-04: IF with branching connections
-  it('should compile IF workflow with two output branches', () => {
+  it('should compile IF workflow with two output branches', async () => {
     const wf = workflow('IF Test');
     const trigger = wf.trigger('Manual Trigger', 'n8n-nodes-base.manualTrigger', {});
     const ifNode = wf.node('IF', 'n8n-nodes-base.if', {
@@ -126,23 +126,23 @@ describe('Snapshot Tests', () => {
     wf.connect(ifNode, trueNode, 0);   // true branch
     wf.connect(ifNode, falseNode, 1);   // false branch
 
-    const result = compileWorkflow(wf);
+    const result = await compileWorkflow(wf);
     const normalized = normalizeUUIDs(result);
 
     // Structural assertions - verify TWO output branches
     const ifConnections = normalized.connections['IF'];
     expect(ifConnections).toBeDefined();
     expect(ifConnections.main).toHaveLength(2);
-    expect(ifConnections.main[0]).toHaveLength(1); // true branch -> True Branch
-    expect(ifConnections.main[1]).toHaveLength(1); // false branch -> False Branch
-    expect(ifConnections.main[0][0].node).toBe('True Branch');
-    expect(ifConnections.main[1][0].node).toBe('False Branch');
+    expect(ifConnections.main![0]).toHaveLength(1); // true branch -> True Branch
+    expect(ifConnections.main![1]).toHaveLength(1); // false branch -> False Branch
+    expect(ifConnections.main![0][0].node).toBe('True Branch');
+    expect(ifConnections.main![1][0].node).toBe('False Branch');
 
     expect(normalized).toMatchSnapshot();
   });
 
   // NODE-05: Set with field assignments
-  it('should compile Set workflow with field assignments', () => {
+  it('should compile Set workflow with field assignments', async () => {
     const wf = workflow('Set Test');
     const trigger = wf.trigger('Manual Trigger', 'n8n-nodes-base.manualTrigger', {});
     const setNode = wf.node('Set Fields', 'n8n-nodes-base.set', {
@@ -156,7 +156,7 @@ describe('Snapshot Tests', () => {
     });
     wf.connect(trigger, setNode);
 
-    const result = compileWorkflow(wf);
+    const result = await compileWorkflow(wf);
     const normalized = normalizeUUIDs(result);
 
     // Structural assertions

@@ -31,7 +31,7 @@ export async function deployWorkflow(
   }
 
   // Compile workflow to n8n JSON
-  const compiled = compileWorkflow(builder);
+  const compiled = await compileWorkflow(builder);
 
   // Strip read-only 'active' field — n8n public API rejects it
   const { active: _, ...payload } = compiled;
