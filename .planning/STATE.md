@@ -6,23 +6,23 @@ See: .planning/PROJECT.md (updated 2026-01-31)
 
 **Core value:** Compiled workflows import and execute correctly in n8n on the first try — targeting 99% success rate
 
-**Current focus:** PROJECT COMPLETE
+**Current focus:** Gap closure — typed node API
 
 ## Current Position
 
-Phase: 4 of 4 (Validation)
-Plan: 2 of 2 complete
-Status: ALL PHASES COMPLETE
-Last activity: 2026-01-31 — Completed 04-02-PLAN.md
+Phase: 5 of 5 (Typed Node API)
+Plan: 1 of 1 complete
+Status: Phase 5 complete
+Last activity: 2026-01-31 — Completed 05-01-PLAN.md
 
-Progress: [██████████] 100% (4/4 phases, 9/9 plans)
+Progress: [██████████] 100% (5/5 phases, 10/10 plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 9
-- Average duration: 2.4 minutes
-- Total execution time: 0.36 hours
+- Total plans completed: 10
+- Average duration: 2.6 minutes
+- Total execution time: 0.43 hours
 
 **By Phase:**
 
@@ -32,9 +32,10 @@ Progress: [██████████] 100% (4/4 phases, 9/9 plans)
 | 02-sdk-core | 2 | 5 min | 2.5 min | Complete |
 | 03-compilation | 2 | 3 min | 1.5 min | Complete |
 | 04-validation | 2 | 6 min | 3.0 min | Complete |
+| 05-typed-node-api | 1 | 4 min | 4.0 min | Complete |
 
 **Recent Trend:**
-- Last 5 plans: 02-02 (2m), 03-01 (2m), 03-02 (1m), 04-01 (1m), 04-02 (5m)
+- Last 5 plans: 03-01 (2m), 03-02 (1m), 04-01 (1m), 04-02 (5m), 05-01 (4m)
 
 *Updated after each plan completion*
 
@@ -71,10 +72,11 @@ All decisions from project execution:
 - Dynamic import for workflows (03-02: enables .ts file execution via tsx)
 - API key auth over session auth (04-02: n8n public API v1 requires X-N8N-API-KEY header)
 - Strip 'active' before import (04-02: public API marks it read-only)
+- Inline param types over generated imports (05-01: avoids TS duplicate property errors from conditional schemas)
 
 ### Pending Todos
 
-None - project complete.
+None - all phases complete.
 
 ### Blockers/Concerns
 
@@ -88,8 +90,8 @@ All previous concerns resolved:
 
 ## Session Continuity
 
-Last session: 2026-01-31T09:28:00Z
-Stopped at: PROJECT COMPLETE - All 4 phases, 9 plans executed
+Last session: 2026-01-31T09:56:00Z
+Stopped at: Completed 05-01-PLAN.md
 Resume file: None
 
-**Project complete:** 52 tests passing (11 builder + 11 expression + 12 codegen + 8 compiler + 5 snapshot + 5 integration). All 5 target nodes validated end-to-end from SDK builder to n8n import.
+**Project complete:** 52 tests passing (11 builder + 11 expression + 12 codegen + 8 compiler + 5 snapshot + 5 integration). All 5 target nodes validated end-to-end. Typed node API provides compile-time checked node creation with createTypedNodes().
