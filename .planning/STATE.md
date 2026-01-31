@@ -10,29 +10,30 @@ See: .planning/PROJECT.md (updated 2026-01-31)
 
 ## Current Position
 
-Phase: 1 of 4 (Foundation) — VERIFIED ✓
-Plan: 3 of 3 complete
-Status: Phase 1 verified (8/8 must-haves passed), ready for Phase 2
-Last activity: 2026-01-31 — Phase 1 re-verified after gap closure (8/8 passed)
+Phase: 2 of 4 (SDK Core) — IN PROGRESS
+Plan: 1 of 3 complete (02-02-PLAN.md)
+Status: Workflow builder complete, ready for type generation and compiler
+Last activity: 2026-01-31 — Completed 02-02-PLAN.md (Workflow builder)
 
-Progress: [██░░░░░░░░] 25% (1/4 phases)
+Progress: [██░░░░░░░░] 25% (1.25/4 phases)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 3
-- Average duration: 3.3 minutes
-- Total execution time: 0.17 hours
+- Total plans completed: 4
+- Average duration: 3.0 minutes
+- Total execution time: 0.20 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01-foundation | 3 | 10 min | 3.3 min |
+| 02-sdk-core | 1 | 2 min | 2.0 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (3m), 01-02 (4m), 01-03 (3m)
-- Trend: Consistent velocity
+- Last 5 plans: 01-01 (3m), 01-02 (4m), 01-03 (3m), 02-02 (2m)
+- Trend: Excellent velocity, efficient TDD execution
 
 *Updated after each plan completion*
 
@@ -55,6 +56,9 @@ Recent decisions affecting current work:
 - ResourceLocator dual form (01-02: object | string for convenience)
 - Use /types/nodes.json endpoint (01-03: actual n8n API, fetch all nodes and filter client-side)
 - Bulk fetch over per-node requests (01-03: single API call more efficient)
+- trigger() and node() identical implementation (02-02: differentiation deferred to Phase 3 compiler)
+- Immediate connect() validation (02-02: validate node existence at call time, not deferred)
+- Defensive copying in getters (02-02: prevent external mutation of builder state)
 
 ### Pending Todos
 
@@ -62,17 +66,22 @@ None yet.
 
 ### Blockers/Concerns
 
-None - Phase 01 (Foundation) complete and verified.
+None - Phase 02 workflow builder complete with comprehensive test coverage.
 
 Previous concerns resolved:
 - Schema extraction not yet tested against live n8n instance (01-01) - RESOLVED in 01-03 (working)
 - Unknown if n8n REST API schema format exactly matches type definitions (01-01) - RESOLVED in 01-03 (verified)
 - Initial API endpoint assumption incorrect (01-03) - RESOLVED by discovering /types/nodes.json
 
+Next phase readiness:
+- Workflow builder creates in-memory representation ready for JSON compilation
+- NodeRef system enables validated connections for compiler consumption
+- getNodes() and getConnections() provide clean data structures for Phase 3
+
 ## Session Continuity
 
 Last session: 2026-01-31
-Stopped at: Completed 01-03-PLAN.md (gap closure plan)
+Stopped at: Completed 02-02-PLAN.md (Workflow builder)
 Resume file: None
 
-**Phase 01 Foundation complete:** Schema extraction working with real n8n instance. Ready to begin Phase 02 (SDK Core).
+**Phase 02 progress:** Workflow builder complete with TDD coverage (11 tests). Ready for type generation and compiler implementation.
