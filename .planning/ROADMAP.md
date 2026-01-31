@@ -66,12 +66,13 @@ Plans:
   6. **Richer validation**: Validates at least: trigger exists, no orphan nodes, output index valid for node type, referenced credentials exist (warning), expression `ref()` targets exist in workflow
   7. All new patterns have snapshot tests and integration tests against live n8n
   8. Existing 5 typed node tests still pass (no regressions)
-**Plans**: 3 plans
+**Plans**: 4 plans
 
 Plans:
-- [ ] 05.2-01-PLAN.md — Core compiler changes: typeVersion from schemas, inputIndex, credentials, error connections
-- [ ] 05.2-02-PLAN.md — Topology-aware layout engine and comprehensive validation
-- [ ] 05.2-03-PLAN.md — Snapshot regeneration, new pattern tests, integration tests, regression verification
+- [x] 05.2-01-PLAN.md — typeVersion from schemas, inputIndex, error connections (wave 1)
+- [x] 05.2-02-PLAN.md — Credential API research + credential support (wave 2)
+- [x] 05.2-03-PLAN.md — Topology layout + comprehensive validation (wave 3)
+- [ ] 05.2-04-PLAN.md — Snapshot regeneration, new tests, integration tests, regression checks (wave 4)
 
 ### Phase 5.3: Automated Workflow Testing
 **Goal**: Claude can deploy a workflow, execute it with test data, read the results, and fix failures — a complete build-deploy-test-fix loop
@@ -163,7 +164,7 @@ Rationale: Correctness-first ordering. Fix the builder (5.2) so it produces corr
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
 | 5.1 Deployable Package | v1.1 | 1/1 | Complete | 2026-01-31 |
-| 5.2 Complex Workflow Builder | v1.1 | 0/0 | Not started | - |
+| 5.2 Complex Workflow Builder | v1.1 | 0/4 | Planned | - |
 | 5.3 Automated Workflow Testing | v1.1 | 0/0 | Not started | - |
 | 5.4 Generate Typed Node APIs | v1.1 | 0/0 | Not started | - |
 | 6. Foundation Docs | v1.1 | 0/1 | Not started | - |

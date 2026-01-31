@@ -11,12 +11,12 @@ See: .planning/PROJECT.md (updated 2026-01-31)
 ## Current Position
 
 Phase: 5.2 of 8 (Complex Workflow Builder — IN PROGRESS)
-Plan: 2 of 4 in current phase
+Plan: 3 of 4 in current phase
 Status: In progress
-Last activity: 2026-01-31 — Completed 05.2-02-PLAN.md
+Last activity: 2026-01-31 — Completed 05.2-03-PLAN.md
 
 Progress: v1.0 shipped (5 phases, 12 plans, 61 tests)
-v1.1: [████░░░░░░] 37.5% (3/8 plans)
+v1.1: [█████░░░░░] 50% (4/8 plans)
 
 ## Performance Metrics
 
@@ -26,8 +26,8 @@ v1.1: [████░░░░░░] 37.5% (3/8 plans)
 - Total execution time: 0.50 hours
 
 **v1.1 Velocity:**
-- Plans completed: 3
-- Average duration: 4 minutes
+- Plans completed: 4
+- Average duration: 4.25 minutes
 
 ## Accumulated Context
 
@@ -46,6 +46,10 @@ All v1.0 decisions logged in PROJECT.md Key Decisions table with outcomes.
 | 05.2-02 | Research live n8n API before implementing credentials | Verified actual credential structure from running instance rather than assumptions |
 | 05.2-02 | Credentials optional (4th parameter) | Backward compatibility - existing code unchanged, new code can add credentials |
 | 05.2-02 | Compiler passes credentials through unmodified | No transformation needed - direct flow from WorkflowNode to N8nNode |
+| 05.2-03 | BFS-based topology layout | Triggers at left, downstream flows right, branches fan vertically - visual clarity for complex workflows |
+| 05.2-03 | Validation returns ValidationResult not throw | Collect-all pattern reports all errors/warnings at once instead of failing on first issue |
+| 05.2-03 | Credentials generate warnings not errors | Credential IDs are external - deployment handles missing credentials, compilation can't verify |
+| 05.2-03 | Expression ref validation via JSON.stringify | Simple regex on stringified params extracts $node["Name"] references without tree traversal |
 
 ### Pending Todos
 
@@ -69,6 +73,6 @@ All v1.0 decisions logged in PROJECT.md Key Decisions table with outcomes.
 
 ## Session Continuity
 
-Last session: 2026-01-31T21:13:57Z
-Stopped at: Completed 05.2-02-PLAN.md (Phase 5.2 plan 2 of 4)
-Resume with: Next plan in Phase 5.2 (05.2-03 error handling)
+Last session: 2026-01-31T21:21:28Z
+Stopped at: Completed 05.2-03-PLAN.md (Phase 5.2 plan 3 of 4)
+Resume with: Next plan in Phase 5.2 (05.2-04 snapshot tests)
