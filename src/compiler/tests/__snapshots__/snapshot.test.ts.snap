@@ -1,0 +1,326 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Snapshot Tests > should compile HTTP Request workflow 1`] = `
+{
+  "active": false,
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "HTTP Request",
+            "type": "main",
+          },
+        ],
+      ],
+    },
+  },
+  "name": "HTTP Request Test",
+  "nodes": [
+    {
+      "id": "uuid-0",
+      "name": "Manual Trigger",
+      "parameters": {},
+      "position": [
+        100,
+        100,
+      ],
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+    },
+    {
+      "id": "uuid-1",
+      "name": "HTTP Request",
+      "parameters": {
+        "authentication": "none",
+        "method": "GET",
+        "options": {},
+        "url": "https://api.example.com/users",
+      },
+      "position": [
+        100,
+        300,
+      ],
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+    },
+  ],
+  "settings": {},
+}
+`;
+
+exports[`Snapshot Tests > should compile IF workflow with two output branches 1`] = `
+{
+  "active": false,
+  "connections": {
+    "IF": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "True Branch",
+            "type": "main",
+          },
+        ],
+        [
+          {
+            "index": 0,
+            "node": "False Branch",
+            "type": "main",
+          },
+        ],
+      ],
+    },
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "IF",
+            "type": "main",
+          },
+        ],
+      ],
+    },
+  },
+  "name": "IF Test",
+  "nodes": [
+    {
+      "id": "uuid-0",
+      "name": "Manual Trigger",
+      "parameters": {},
+      "position": [
+        100,
+        100,
+      ],
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+    },
+    {
+      "id": "uuid-1",
+      "name": "IF",
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "operation": "equal",
+              "value1": "={{ $json.status }}",
+              "value2": "active",
+            },
+          ],
+        },
+      },
+      "position": [
+        100,
+        300,
+      ],
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+    },
+    {
+      "id": "uuid-2",
+      "name": "True Branch",
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "result",
+              "value": "active",
+            },
+          ],
+        },
+      },
+      "position": [
+        100,
+        500,
+      ],
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+    },
+    {
+      "id": "uuid-3",
+      "name": "False Branch",
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "result",
+              "value": "inactive",
+            },
+          ],
+        },
+      },
+      "position": [
+        400,
+        100,
+      ],
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+    },
+  ],
+  "settings": {},
+}
+`;
+
+exports[`Snapshot Tests > should compile Set workflow with field assignments 1`] = `
+{
+  "active": false,
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "Set Fields",
+            "type": "main",
+          },
+        ],
+      ],
+    },
+  },
+  "name": "Set Test",
+  "nodes": [
+    {
+      "id": "uuid-0",
+      "name": "Manual Trigger",
+      "parameters": {},
+      "position": [
+        100,
+        100,
+      ],
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+    },
+    {
+      "id": "uuid-1",
+      "name": "Set Fields",
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "fullName",
+              "value": "={{ $json.firstName + " " + $json.lastName }}",
+            },
+          ],
+        },
+      },
+      "position": [
+        100,
+        300,
+      ],
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+    },
+  ],
+  "settings": {},
+}
+`;
+
+exports[`Snapshot Tests > should compile Slack workflow with expression 1`] = `
+{
+  "active": false,
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "Send Slack",
+            "type": "main",
+          },
+        ],
+      ],
+    },
+  },
+  "name": "Slack Test",
+  "nodes": [
+    {
+      "id": "uuid-0",
+      "name": "Webhook",
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "slack-hook",
+      },
+      "position": [
+        100,
+        100,
+      ],
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+    },
+    {
+      "id": "uuid-1",
+      "name": "Send Slack",
+      "parameters": {
+        "channel": "#general",
+        "operation": "post",
+        "resource": "message",
+        "text": "={{ $node['Webhook'].json.body.message }}",
+      },
+      "position": [
+        100,
+        300,
+      ],
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 1,
+    },
+  ],
+  "settings": {},
+}
+`;
+
+exports[`Snapshot Tests > should compile Webhook workflow 1`] = `
+{
+  "active": false,
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "Set Data",
+            "type": "main",
+          },
+        ],
+      ],
+    },
+  },
+  "name": "Webhook Test",
+  "nodes": [
+    {
+      "id": "uuid-0",
+      "name": "Webhook",
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "test-webhook",
+        "responseMode": "onReceived",
+      },
+      "position": [
+        100,
+        100,
+      ],
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+    },
+    {
+      "id": "uuid-1",
+      "name": "Set Data",
+      "parameters": {
+        "keepOnlySet": false,
+        "values": {
+          "string": [],
+        },
+      },
+      "position": [
+        100,
+        300,
+      ],
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+    },
+  ],
+  "settings": {},
+}
+`;
