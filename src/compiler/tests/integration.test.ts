@@ -231,4 +231,91 @@ describe('Integration Tests — n8n Workflow Import', () => {
     expect(body).toHaveProperty('id');
     createdWorkflowIds.push(body.id as string);
   });
+
+  // Phase 5.2 Pattern Integration Tests
+
+  // PATTERN-01: Merge with inputIndex
+  it('should import compiled Merge workflow with inputIndex into n8n', async () => {
+    if (!n8nAvailable) return;
+
+    const wf = workflow('Integration Test — Merge');
+    const trigger1 = wf.trigger('Manual Trigger', 'n8n-nodes-base.manualTrigger', {});
+    const set1 = wf.node('Set A', 'n8n-nodes-base.set', {
+      values: { string: [{ name: 'source', value: 'A' }] },
+    });
+    const trigger2 = wf.trigger('Schedule Trigger', 'n8n-nodes-base.scheduleTrigger', {
+      rule: { interval: [{ field: 'hours', hoursInterval: 1 }] },
+    });
+    const set2 = wf.node('Set B', 'n8n-nodes-base.set', {
+      values: { string: [{ name: 'source', value: 'B' }] },
+    });
+    const merge = wf.node('Merge', 'n8n-nodes-base.merge', {
+      mode: 'combine',
+      combinationMode: 'multiplex',
+    });
+
+    wf.connect(trigger1, set1);
+    wf.connect(trigger2, set2);
+    wf.connect(set1, merge, 0, 0); // Input 0
+    wf.connect(set2, merge, 0, 1); // Input 1
+
+    const compiled = await compileWorkflow(wf);
+    const { status, body } = await importWorkflow(compiled);
+
+    expect(status === 200 || status === 201).toBe(true);
+    expect(body).toHaveProperty('id');
+    createdWorkflowIds.push(body.id as string);
+  });
+
+  // PATTERN-02: Error connection
+  it('should import compiled workflow with error connection into n8n', async () => {
+    if (!n8nAvailable) return;
+
+    const wf = workflow('Integration Test — Error Connection');
+    const trigger = wf.trigger('Manual Trigger', 'n8n-nodes-base.manualTrigger', {});
+    const httpReq = wf.node('HTTP Request', 'n8n-nodes-base.httpRequest', {
+      method: 'GET',
+      url: 'https://api.example.com/data',
+      authentication: 'none',
+    });
+    const errorHandler = wf.node('Error Handler', 'n8n-nodes-base.set', {
+      values: { string: [{ name: 'error', value: 'handled' }] },
+    });
+
+    wf.connect(trigger, httpReq);
+    wf.connectError(httpReq, errorHandler);
+
+    const compiled = await compileWorkflow(wf);
+    const { status, body } = await importWorkflow(compiled);
+
+    expect(status === 200 || status === 201).toBe(true);
+    expect(body).toHaveProperty('id');
+    createdWorkflowIds.push(body.id as string);
+  });
+
+  // PATTERN-03: Credentials (commented out - requires actual credentials in n8n instance)
+  // TODO: Uncomment this test if credentials are created in the n8n instance
+  /*
+  it('should import compiled workflow with credentials into n8n', async () => {
+    if (!n8nAvailable) return;
+
+    const wf = workflow('Integration Test — Credentials');
+    const trigger = wf.trigger('Manual Trigger', 'n8n-nodes-base.manualTrigger', {});
+    const slack = wf.node('Send Slack', 'n8n-nodes-base.slack', {
+      resource: 'message',
+      operation: 'post',
+      text: 'Hello',
+    }, {
+      slackApi: { id: 'ACTUAL_CREDENTIAL_ID', name: 'My Slack' }
+    });
+    wf.connect(trigger, slack);
+
+    const compiled = await compileWorkflow(wf);
+    const { status, body } = await importWorkflow(compiled);
+
+    expect(status === 200 || status === 201).toBe(true);
+    expect(body).toHaveProperty('id');
+    createdWorkflowIds.push(body.id as string);
+  });
+  */
 });
