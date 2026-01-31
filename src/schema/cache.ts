@@ -11,23 +11,19 @@ const CACHE_DIR = 'schemas';
 /**
  * Converts node type name to filename
  * @param nodeTypeName - e.g., "n8n-nodes-base.slack"
- * @returns Filename - e.g., "n8n-nodes-base-slack.json"
+ * @returns Filename - e.g., "n8n-nodes-base.slack.json"
  */
 function nodeTypeToFilename(nodeTypeName: string): string {
-  return `${nodeTypeName.replace(/\./g, '-')}.json`;
+  return `${nodeTypeName}.json`;
 }
 
 /**
  * Converts filename to node type name
- * @param filename - e.g., "n8n-nodes-base-slack.json"
+ * @param filename - e.g., "n8n-nodes-base.slack.json"
  * @returns Node type name - e.g., "n8n-nodes-base.slack"
  */
 function filenameToNodeType(filename: string): string {
-  const name = filename.replace(/\.json$/, '');
-  // Convert back: n8n-nodes-base-slack -> n8n-nodes-base.slack
-  const parts = name.split('-');
-  // Rejoin as: n8n-nodes-base.slack
-  return parts.slice(0, 3).join('-') + '.' + parts.slice(3).join('-');
+  return filename.replace(/\.json$/, '');
 }
 
 /**
