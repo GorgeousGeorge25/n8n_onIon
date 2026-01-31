@@ -278,5 +278,42 @@ describe('Compiler', () => {
       expect(result.valid).toBe(true);
       expect(result.errors).toHaveLength(0);
     });
+
+    it('should detect invalid output index', () => {
+      const wf = workflow('Invalid Output Test');
+      const trigger = wf.trigger('Start', 'n8n-nodes-base.manualTrigger', {});
+      const ifNode = wf.node('IF', 'n8n-nodes-base.if', {});
+      const action = wf.node('Action', 'n8n-nodes-base.slack', {});
+
+      wf.connect(trigger, ifNode);
+      // IF nodes typically have 2 outputs (0, 1), so outputIndex 5 is invalid
+      wf.connect(ifNode, action, 5);
+
+      const nodes = wf.getNodes();
+      const connections = wf.getConnections();
+
+      const result = validateWorkflow(nodes, connections);
+
+      expect(result.valid).toBe(false);
+      expect(result.errors.some(e => e.code === 'INVALID_OUTPUT_INDEX')).toBe(true);
+    });
+
+    it('should collect all errors without stopping at first', () => {
+      const wf = workflow('Multiple Errors Test');
+      // Create workflow with BOTH no trigger AND orphan node
+      wf.node('Orphan1', 'n8n-nodes-base.slack', {});
+      wf.node('Orphan2', 'n8n-nodes-base.http', {});
+
+      const nodes = wf.getNodes();
+      const connections = wf.getConnections();
+
+      const result = validateWorkflow(nodes, connections);
+
+      expect(result.valid).toBe(false);
+      // Should have NO_TRIGGER + 2 ORPHAN_NODE errors
+      expect(result.errors.length).toBeGreaterThanOrEqual(2);
+      expect(result.errors.some(e => e.code === 'NO_TRIGGER')).toBe(true);
+      expect(result.errors.some(e => e.code === 'ORPHAN_NODE')).toBe(true);
+    });
   });
 });

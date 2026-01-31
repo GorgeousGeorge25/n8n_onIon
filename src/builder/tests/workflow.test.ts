@@ -112,4 +112,80 @@ describe('BUILD-04: wf.connect()', () => {
 
     expect(() => wf.connect(fakeNode, slack)).toThrow('Unknown node');
   });
+
+  it('supports inputIndex parameter for merge patterns', () => {
+    const wf = workflow('Test');
+    const source1 = wf.trigger('Source1', 'n8n-nodes-base.manualTrigger', {});
+    const source2 = wf.trigger('Source2', 'n8n-nodes-base.scheduleTrigger', {});
+    const merge = wf.node('Merge', 'n8n-nodes-base.merge', {});
+
+    wf.connect(source1, merge, 0, 0); // Input 0
+    wf.connect(source2, merge, 0, 1); // Input 1
+
+    const conns = wf.getConnections();
+    expect(conns[0].inputIndex).toBe(0);
+    expect(conns[1].inputIndex).toBe(1);
+  });
+});
+
+describe('BUILD-05: wf.connectError()', () => {
+  it('creates error-type connection', () => {
+    const wf = workflow('Test');
+    const httpReq = wf.node('HTTP', 'n8n-nodes-base.httpRequest', {});
+    const errorHandler = wf.node('ErrorHandler', 'n8n-nodes-base.set', {});
+
+    wf.connectError(httpReq, errorHandler);
+
+    const conns = wf.getConnections();
+    expect(conns).toHaveLength(1);
+    expect(conns[0].from).toBe('HTTP');
+    expect(conns[0].to).toBe('ErrorHandler');
+    expect(conns[0].connectionType).toBe('error');
+  });
+
+  it('rejects error connection to non-existent node', () => {
+    const wf = workflow('Test');
+    const httpReq = wf.node('HTTP', 'n8n-nodes-base.httpRequest', {});
+    const fakeNode = { name: 'Nonexistent' };
+
+    expect(() => wf.connectError(httpReq, fakeNode)).toThrow('Unknown node');
+  });
+});
+
+describe('BUILD-06: credentials parameter', () => {
+  it('attaches credentials to trigger nodes', () => {
+    const wf = workflow('Test');
+    const webhook = wf.trigger('Webhook', 'n8n-nodes-base.webhook', {
+      httpMethod: 'POST'
+    }, {
+      webhookAuth: { id: '123', name: 'My Auth' }
+    });
+
+    const nodes = wf.getNodes();
+    expect(nodes[0].credentials).toBeDefined();
+    expect(nodes[0].credentials).toHaveProperty('webhookAuth');
+    expect(nodes[0].credentials!.webhookAuth).toEqual({ id: '123', name: 'My Auth' });
+  });
+
+  it('attaches credentials to action nodes', () => {
+    const wf = workflow('Test');
+    const slack = wf.node('Slack', 'n8n-nodes-base.slack', {
+      resource: 'message'
+    }, {
+      slackApi: { id: '456', name: 'My Slack' }
+    });
+
+    const nodes = wf.getNodes();
+    expect(nodes[0].credentials).toBeDefined();
+    expect(nodes[0].credentials).toHaveProperty('slackApi');
+    expect(nodes[0].credentials!.slackApi).toEqual({ id: '456', name: 'My Slack' });
+  });
+
+  it('omits credentials when not provided', () => {
+    const wf = workflow('Test');
+    const slack = wf.node('Slack', 'n8n-nodes-base.slack', {});
+
+    const nodes = wf.getNodes();
+    expect(nodes[0].credentials).toBeUndefined();
+  });
 });
