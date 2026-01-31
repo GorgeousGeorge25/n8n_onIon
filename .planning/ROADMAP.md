@@ -15,7 +15,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Foundation** - Schema extraction and type generation
 - [x] **Phase 2: SDK Core** - Workflow builder and expression system
 - [x] **Phase 3: Compilation** - Compiler and CLI tooling
-- [ ] **Phase 4: Validation** - Testing and node coverage
+- [x] **Phase 4: Validation** - Testing and node coverage
 
 ## Phase Details
 
@@ -103,8 +103,8 @@ Plans:
 **Plans:** 2 plans
 
 Plans:
-- [ ] 04-01-PLAN.md — Snapshot tests for all 5 target nodes (Webhook, HTTP Request, Slack, IF, Set)
-- [ ] 04-02-PLAN.md — Integration tests importing compiled workflows into n8n via API
+- [x] 04-01-PLAN.md — Snapshot tests for all 5 target nodes (Webhook, HTTP Request, Slack, IF, Set)
+- [x] 04-02-PLAN.md — Integration tests importing compiled workflows into n8n via API
 
 ## Progress
 
@@ -116,4 +116,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 1. Foundation | 3/3 | ✓ Complete | 2026-01-31 |
 | 2. SDK Core | 2/2 | ✓ Complete | 2026-01-31 |
 | 3. Compilation | 2/2 | ✓ Complete | 2026-01-31 |
-| 4. Validation | 0/2 | Planned | - |
+| 4. Validation | 2/2 | ✓ Complete | 2026-01-31 |

@@ -47,16 +47,16 @@
 
 ### Testing
 
-- [ ] **TEST-01**: Snapshot tests compare compiled output against known-good n8n JSON
-- [ ] **TEST-02**: Integration tests import compiled workflows into n8n via API
+- [x] **TEST-01**: Snapshot tests compare compiled output against known-good n8n JSON
+- [x] **TEST-02**: Integration tests import compiled workflows into n8n via API
 
 ### Node Coverage
 
-- [ ] **NODE-01**: Webhook trigger node fully typed and compilable
-- [ ] **NODE-02**: HTTP Request node fully typed and compilable
-- [ ] **NODE-03**: Slack node fully typed and compilable
-- [ ] **NODE-04**: IF node fully typed and compilable
-- [ ] **NODE-05**: Set node fully typed and compilable
+- [x] **NODE-01**: Webhook trigger node fully typed and compilable
+- [x] **NODE-02**: HTTP Request node fully typed and compilable
+- [x] **NODE-03**: Slack node fully typed and compilable
+- [x] **NODE-04**: IF node fully typed and compilable
+- [x] **NODE-05**: Set node fully typed and compilable
 
 ## v2 Requirements
 
@@ -116,13 +116,13 @@
 | CLI-02 | Phase 3 | Complete |
 | CLI-03 | Phase 3 | Complete |
 | CLI-04 | Phase 3 | Complete |
-| TEST-01 | Phase 4 | Pending |
-| TEST-02 | Phase 4 | Pending |
-| NODE-01 | Phase 4 | Pending |
-| NODE-02 | Phase 4 | Pending |
-| NODE-03 | Phase 4 | Pending |
-| NODE-04 | Phase 4 | Pending |
-| NODE-05 | Phase 4 | Pending |
+| TEST-01 | Phase 4 | Complete |
+| TEST-02 | Phase 4 | Complete |
+| NODE-01 | Phase 4 | Complete |
+| NODE-02 | Phase 4 | Complete |
+| NODE-03 | Phase 4 | Complete |
+| NODE-04 | Phase 4 | Complete |
+| NODE-05 | Phase 4 | Complete |
 
 **Coverage:**
 - v1 requirements: 29 total
@@ -131,4 +131,4 @@
 
 ---
 *Requirements defined: 2026-01-31*
-*Last updated: 2026-01-31 after roadmap creation*
+*Last updated: 2026-01-31 after Phase 4 completion*
