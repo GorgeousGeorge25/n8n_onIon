@@ -34,3 +34,8 @@ export type { TypedNodes } from './codegen/typed-api.js';
 // Deployer
 export * from './deployer/types.js';
 export { deployWorkflow } from './deployer/deploy.js';
+
+// Executor (workflow testing)
+export * from './executor/types.js';
+export { getExecution, pollExecution, triggerWebhook, deleteWorkflow, extractNodeData } from './executor/execute.js';
+export { testWorkflow } from './executor/test-harness.js';
