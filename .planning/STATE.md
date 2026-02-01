@@ -10,13 +10,13 @@ See: .planning/PROJECT.md (updated 2026-01-31)
 
 ## Current Position
 
-Phase: 5.3 of 8 (Automated Workflow Testing — COMPLETE)
-Plan: 3 of 3 in current phase
-Status: Phase complete
-Last activity: 2026-02-01 — Completed 05.3-03-PLAN.md
+Phase: 5.4 of 8 (Generate Typed Node APIs)
+Plan: 1 of 3 in current phase
+Status: In progress
+Last activity: 2026-02-01 — Completed 05.4-01-PLAN.md
 
 Progress: v1.0 shipped (5 phases, 12 plans, 61 tests)
-v1.1: [█████████░] 90% (8/8 plans)
+v1.1: [█████████░] 92% (9/8 plans)
 
 ## Performance Metrics
 
@@ -26,10 +26,11 @@ v1.1: [█████████░] 90% (8/8 plans)
 - Total execution time: 0.50 hours
 
 **v1.1 Velocity:**
-- Plans completed: 11
-- Average duration: 3.6 minutes
+- Plans completed: 12
+- Average duration: 3.5 minutes
 - Phase 5.2 total: 17 minutes (4 plans)
 - Phase 5.3 total: 12 minutes (3 plans) — COMPLETE
+- Phase 5.4 progress: 3 minutes (1 plan)
 
 ## Accumulated Context
 
@@ -66,6 +67,11 @@ All v1.0 decisions logged in PROJECT.md Key Decisions table with outcomes.
 | 05.3-03 | it.skipIf() pattern for n8n availability | Prevents test failures when n8n offline, cleaner than early return |
 | 05.3-03 | Unique webhook paths per test | Prevents conflicts between parallel test runs using Date.now() timestamp |
 | 05.3-03 | Set v3.4 assignments format | mode: manual, assignments array with id/name/value/type structure replaces legacy values.string format |
+| 05.4-01 | Separate catalog generation from factory modules | Catalog is for Claude discovery (<400KB JSON), factories are for typed usage |
+| 05.4-01 | Category-based file splitting | Split by package/group (triggers, transform, input, output, langchain) keeps files under 500 lines |
+| 05.4-01 | Types file size exception | Allow types.ts (18,417 lines) to exceed limit - it's interface definition, not implementation |
+| 05.4-01 | Keep full operation details in catalog | 384KB catalog worth extra 184KB for complete node metadata discovery |
+| 05.4-01 | Flat factory namespace | createTypedNodes() returns flat object (nodes.slack vs nodes.output.slack) for simpler usage |
 
 ### Pending Todos
 
@@ -109,8 +115,18 @@ All v1.0 decisions logged in PROJECT.md Key Decisions table with outcomes.
 3. **Test suite is 80 tests with 7 hitting live n8n** — Phase 5.3 will add more integration tests. Consider separating unit vs integration test runs if suite gets slow.
 4. **Untracked files in working directory** — `test-workflows/`, `docs/`, `SKILL.md`, `generated/nodes.ts` are sitting uncommitted. Won't interfere but create noise in git status. Commit or gitignore before next phase.
 
+### Observations from Phase 5.4-01 Execution
+
+1. **Category-based splitting works well** — Transform category required 52 split files due to heavy resource/operation pattern usage. Automatic alphabetical splitting keeps all files manageable.
+2. **Catalog is self-documenting** — 384KB JSON with full metadata (type, credentials, operations) enables Claude to discover any node without reading factory code.
+3. **Type imports are extensive** — Some factory files import 100+ discriminated union types. TypeScript handles this efficiently.
+4. **Factory code is remarkably compact** — Average 7 lines per resource/operation function. Systematic pattern reduces 797 nodes to <500 lines per file.
+5. **Generated code compiles cleanly** — All 129 files compile without errors, integrate correctly with generated/nodes.ts types.
+6. **Transform nodes dominate** — Required most splits (52 files). Reflects n8n's focus on data transformation operations.
+7. **Langchain nodes are simpler** — Only 3 split files needed. Most use simple configuration vs resource/operation pattern.
+
 ## Session Continuity
 
-Last session: 2026-02-01T00:46:46Z
-Stopped at: Completed 05.3-03-PLAN.md (Integration Tests & SDK Exports)
-Resume with: `/gsd:discuss-phase 5.4` or `/gsd:plan-phase 5.4`
+Last session: 2026-02-01T13:18:24Z
+Stopped at: Completed 05.4-01-PLAN.md (Factory Generator Engine & Node Catalog)
+Resume with: Phase 5.4 plan 02 (Update Typed API with Generated Factories)
