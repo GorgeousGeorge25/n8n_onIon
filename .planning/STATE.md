@@ -10,13 +10,13 @@ See: .planning/PROJECT.md (updated 2026-01-31)
 
 ## Current Position
 
-Phase: 5.2 of 8 (Complex Workflow Builder — COMPLETE)
-Plan: 4 of 4 in current phase
-Status: Phase complete
-Last activity: 2026-01-31 — Completed 05.2-04-PLAN.md
+Phase: 5.3 of 8 (Automated Workflow Testing — IN PROGRESS)
+Plan: 1 of 3 in current phase
+Status: In progress
+Last activity: 2026-02-01 — Completed 05.3-01-PLAN.md
 
 Progress: v1.0 shipped (5 phases, 12 plans, 61 tests)
-v1.1: [██████░░░░] 62.5% (5/8 plans)
+v1.1: [███████░░░] 75% (6/8 plans)
 
 ## Performance Metrics
 
@@ -26,9 +26,10 @@ v1.1: [██████░░░░] 62.5% (5/8 plans)
 - Total execution time: 0.50 hours
 
 **v1.1 Velocity:**
-- Plans completed: 8
-- Average duration: 3.9 minutes
+- Plans completed: 9
+- Average duration: 4.1 minutes
 - Phase 5.2 total: 17 minutes (4 plans)
+- Phase 5.3 total: 6 minutes (1 plan so far)
 
 ## Accumulated Context
 
@@ -54,6 +55,9 @@ All v1.0 decisions logged in PROJECT.md Key Decisions table with outcomes.
 | 05.2-04 | Regenerate snapshots completely instead of selective updates | Deleted entire snapshot file before regeneration - ensures clean state and no stale entries |
 | 05.2-04 | Test credentials with validation warnings, not actual credentials | Credentials are external - can't reliably test without n8n setup |
 | 05.2-04 | Verify backward compatibility with unchanged typed-api tests | Zero regressions = Phase 5.2 changes are additive, not breaking |
+| 05.3-01 | Webhook-based execution instead of Manual Trigger | n8n public API v1 does not support Manual Trigger execution - webhooks are only viable option |
+| 05.3-01 | Use ?includeData=true for full execution results | Default GET /api/v1/executions/{id} omits node output data |
+| 05.3-01 | extractNodeData() helper for test assertions | Flatten complex nested n8n execution data to simple {nodeName, data[]} format |
 
 ### Pending Todos
 
@@ -70,13 +74,29 @@ All v1.0 decisions logged in PROJECT.md Key Decisions table with outcomes.
 
 ### Blockers/Concerns
 
-- ~~Phase 05.2-02: Research n8n credential API (`GET /api/v1/credentials`) before planning~~ → Completed - credential structure verified from live workflows
-- ~~Phase 05.2-04: Snapshot tests will fail due to typeVersion change (expected, regeneration needed)~~ → Completed - all snapshots regenerated successfully
-- Phase 5.3 prerequisite: Verify n8n execution API endpoints exist in running n8n version before planning
+- ~~Phase 05.2-02: Research n8n credential API~~ → Completed
+- ~~Phase 05.2-04: Snapshot regeneration~~ → Completed
+- ~~Phase 5.3 prerequisite: Verify n8n execution API endpoints~~ → Completed in 05.3-01
+- Phase 5.3-02: Webhook registration may require delay after activation (1-2s) for reliable execution
 - Doc phases (6-8) success criteria are outdated — written for 5-node SDK, need update after 792-node SDK ships
+
+### Observations from Phase 5.3-01 Execution
+
+1. **n8n public API v1 does NOT support Manual Trigger execution** — Verified via research. POST /api/v1/workflows/{id}/execute returns 405. POST /api/v1/executions returns 405. Only webhook-based execution works via public API.
+2. **GET /api/v1/executions/{id}?includeData=true** — Verified working. Returns full execution data with per-node outputs. Without parameter, response omits node data.
+3. **Webhook registration requires activation** — Webhooks must be activated AND registered (n8n loads workflow). May need 1-2s delay after activation before triggering.
+4. **Test workflows must use Webhook triggers** — Manual Trigger not viable for automated testing via public API. All test scenarios should use Webhook nodes.
+5. **extractNodeData() simplifies assertions** — Helper flattens complex n8n execution structure to {nodeName, data[]} format for easier test assertions.
+
+### Observations from Phase 5.2 Execution
+
+1. **compileWorkflow is now async** — any new code (test harness, utilities) calling compileWorkflow must await it. The deploy flow already handles this.
+2. **Credential availability for test workflows** — at least one credential exists (Telegram). Test scenarios using only built-in nodes (Webhook, Set, IF, Merge) are safer for automated testing than those requiring external credentials.
+3. **Test suite is 80 tests with 7 hitting live n8n** — Phase 5.3 will add more integration tests. Consider separating unit vs integration test runs if suite gets slow.
+4. **Untracked files in working directory** — `test-workflows/`, `docs/`, `SKILL.md`, `generated/nodes.ts` are sitting uncommitted. Won't interfere but create noise in git status. Commit or gitignore before next phase.
 
 ## Session Continuity
 
-Last session: 2026-01-31T21:28:41Z
-Stopped at: Completed 05.2-04-PLAN.md (Phase 5.2 complete)
-Resume with: `/gsd:discuss-phase 5.3` or `/gsd:plan-phase 5.3`
+Last session: 2026-02-01T00:33:03Z
+Stopped at: Completed 05.3-01-PLAN.md (Executor Module)
+Resume with: Phase 5.3-02 (Test Harness) or Phase 5.3-03 (Feedback Loop)
