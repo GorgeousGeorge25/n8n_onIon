@@ -1,14 +1,12 @@
 {
   "name": "n8n-workflow-sdk",
-  "version": "0.1.0",
+  "version": "2.0.0",
   "type": "module",
-  "description": "Type-safe SDK for programmatic n8n workflow construction",
+  "description": "Compiler layer for building, deploying, and testing n8n workflows programmatically",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "extract": "tsx cli/extract.ts",
-    "generate": "tsx cli/generate.ts",
     "build-workflow": "tsx cli/build.ts",
     "validate": "tsx cli/validate.ts",
     "deploy": "tsx cli/deploy.ts",

@@ -1,6 +1,6 @@
 /**
  * n8n-workflow-sdk
- * Type-safe SDK for programmatic n8n workflow construction
+ * Compiler layer for building, deploying, and testing n8n workflows programmatically
  */
 
 // Schema types and utilities
@@ -22,14 +22,6 @@ export { compileWorkflow } from './compiler/compiler.js';
 export { validateWorkflow } from './compiler/validation.js';
 export { calculateGridPosition, calculateTopologyPositions } from './compiler/layout.js';
 export { loadSchemaRegistry, getTypeVersion } from './compiler/schema-registry.js';
-
-// Code generation
-export { generateNodeType, generateNodeTypes } from './codegen/generator.js';
-export { analyzeDisplayOptions, buildDiscriminatedUnions, deduplicateProperties } from './codegen/conditional.js';
-
-// Typed node API
-export { createTypedNodes } from './codegen/typed-api.js';
-export type { TypedNodes } from './codegen/typed-api.js';
 
 // Deployer
 export * from './deployer/types.js';
