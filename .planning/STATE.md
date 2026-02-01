@@ -70,6 +70,9 @@ All v1.0 decisions logged in PROJECT.md Key Decisions table with outcomes.
 ### Pending Todos
 
 1. ~~**Make SDK a deployable/installable package**~~ → Completed in Phase 5.1
+2. **Replace 2s webhook sleep with polling** — Current `setTimeout(2000)` after activation is fragile (slow machines fail, fast machines waste time). Replace with poll loop: check webhook registration via `GET /api/v1/workflows/{id}` or retry webhook trigger with backoff. Low priority — works now, fix if flaky.
+3. **Separate unit and integration test runs** — 85 tests, 12 hit live n8n. Add `vitest` workspace or tag-based filtering so CI runs unit tests only, local dev can opt into integration. Low priority — suite is still fast.
+4. **Commit untracked files or gitignore** — `test-workflows/`, `docs/`, `SKILL.md`, `generated/nodes.ts` sitting uncommitted since v1.0. Creates git status noise. Decide: commit or `.gitignore`.
 
 ### Roadmap Evolution
 

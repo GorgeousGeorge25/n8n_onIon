@@ -2,9 +2,14 @@
  * Workflow execution functions for n8n via public API v1.
  *
  * Key limitations discovered from live n8n instance (v2.2.4):
- * - Manual Trigger workflows CANNOT be executed via public API v1
- * - Webhook triggers work after activation
+ * - Manual Trigger workflows CANNOT be executed via public API v1.
+ *   POST /api/v1/workflows/{id}/execute and POST /api/v1/executions both
+ *   return 405. This is an n8n limitation, not an SDK bug. The internal API
+ *   (/rest/workflows/{id}/run) requires cookie auth and is not stable.
+ *   All automated testing MUST use Webhook trigger nodes instead.
+ * - Webhook triggers work after activation + ~2s registration delay
  * - Execution polling works via GET /api/v1/executions/{id}?includeData=true
+ *   (without ?includeData=true, node output data is omitted from response)
  * - Workflow deletion works via DELETE /api/v1/workflows/{id}
  */
 
