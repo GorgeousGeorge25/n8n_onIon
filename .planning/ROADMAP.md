@@ -106,10 +106,12 @@ Plans:
   4. `createTypedNodes()` returns factories for all 792 nodes, organized by category (e.g., `nodes.communication.slack.message.post()`)
   5. All generated factories compile without errors and produce valid n8n JSON
   6. SKILL.md is updated with accurate capabilities, catalog reference, and credential usage — not deferred to Phase 6
-**Plans**: 0 plans
+**Plans**: 3 plans
 
 Plans:
-- [ ] TBD (run /gsd:plan-phase 5.4 to break down)
+- [ ] 05.4-01-PLAN.md — Factory generator engine + node discovery catalog
+- [ ] 05.4-02-PLAN.md — Wire factories into public API + backward compat tests
+- [ ] 05.4-03-PLAN.md — SKILL.md with full 797-node SDK reference
 
 ### Phase 6: Foundation Docs
 **Goal**: A new user (human or Claude) can understand what the SDK does and get it running
@@ -168,7 +170,7 @@ Rationale: Correctness-first ordering. Fix the builder (5.2) so it produces corr
 | 5.1 Deployable Package | v1.1 | 1/1 | Complete | 2026-01-31 |
 | 5.2 Complex Workflow Builder | v1.1 | 4/4 | Complete | 2026-01-31 |
 | 5.3 Automated Workflow Testing | v1.1 | 3/3 | Complete | 2026-02-01 |
-| 5.4 Generate Typed Node APIs | v1.1 | 0/0 | Not started | - |
+| 5.4 Generate Typed Node APIs | v1.1 | 0/3 | Not started | - |
 | 6. Foundation Docs | v1.1 | 0/1 | Not started | - |
 | 7. API and Tutorials | v1.1 | 0/2 | Not started | - |
 | 8. Examples and Reference | v1.1 | 0/2 | Not started | - |
