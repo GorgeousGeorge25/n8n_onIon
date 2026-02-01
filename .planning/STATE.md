@@ -11,12 +11,12 @@ See: .planning/PROJECT.md (updated 2026-01-31)
 ## Current Position
 
 Phase: 5.3 of 8 (Automated Workflow Testing — IN PROGRESS)
-Plan: 1 of 3 in current phase
+Plan: 2 of 3 in current phase
 Status: In progress
-Last activity: 2026-02-01 — Completed 05.3-01-PLAN.md
+Last activity: 2026-02-01 — Completed 05.3-02-PLAN.md
 
 Progress: v1.0 shipped (5 phases, 12 plans, 61 tests)
-v1.1: [███████░░░] 75% (6/8 plans)
+v1.1: [████████░░] 80% (7/8 plans)
 
 ## Performance Metrics
 
@@ -26,10 +26,10 @@ v1.1: [███████░░░] 75% (6/8 plans)
 - Total execution time: 0.50 hours
 
 **v1.1 Velocity:**
-- Plans completed: 9
-- Average duration: 4.1 minutes
+- Plans completed: 10
+- Average duration: 3.8 minutes
 - Phase 5.2 total: 17 minutes (4 plans)
-- Phase 5.3 total: 6 minutes (1 plan so far)
+- Phase 5.3 total: 8 minutes (2 plans so far)
 
 ## Accumulated Context
 
@@ -58,6 +58,11 @@ All v1.0 decisions logged in PROJECT.md Key Decisions table with outcomes.
 | 05.3-01 | Webhook-based execution instead of Manual Trigger | n8n public API v1 does not support Manual Trigger execution - webhooks are only viable option |
 | 05.3-01 | Use ?includeData=true for full execution results | Default GET /api/v1/executions/{id} omits node output data |
 | 05.3-01 | extractNodeData() helper for test assertions | Flatten complex nested n8n execution data to simple {nodeName, data[]} format |
+| 05.3-02 | 2-second delay after activation for webhook registration | n8n needs time to load and register webhooks after activation to avoid 404 errors |
+| 05.3-02 | Extract webhook path from builder or accept explicit option | Flexibility for different test scenarios - auto-extraction for standard workflows, explicit for advanced cases |
+| 05.3-02 | Deep comparison using JSON.stringify for object assertions | Simple, reliable comparison for complex objects without deep-equality library dependency |
+| 05.3-02 | Always cleanup workflow even on test failure | Prevents n8n instance clutter with test workflows using try/finally pattern |
+| 05.3-02 | Return detailed failures with type/message/expected/actual | Enables Claude to diagnose and fix failures with actual output data for debugging |
 
 ### Pending Todos
 
@@ -77,8 +82,16 @@ All v1.0 decisions logged in PROJECT.md Key Decisions table with outcomes.
 - ~~Phase 05.2-02: Research n8n credential API~~ → Completed
 - ~~Phase 05.2-04: Snapshot regeneration~~ → Completed
 - ~~Phase 5.3 prerequisite: Verify n8n execution API endpoints~~ → Completed in 05.3-01
-- Phase 5.3-02: Webhook registration may require delay after activation (1-2s) for reliable execution
+- ~~Phase 5.3-02: Webhook registration may require delay after activation (1-2s) for reliable execution~~ → Addressed in 05.3-02 (2s delay implemented)
 - Doc phases (6-8) success criteria are outdated — written for 5-node SDK, need update after 792-node SDK ships
+
+### Observations from Phase 5.3-02 Execution
+
+1. **testWorkflow() provides complete testing feedback loop** — Single function call deploys, executes, asserts, and cleans up. Returns detailed pass/fail results with diagnostic information.
+2. **2-second webhook registration delay is critical** — Without delay, webhooks return 404. n8n needs time to load workflow after activation.
+3. **Nested field assertions via dot notation** — getNestedField() helper enables assertions like 'user.id' without complex traversal code.
+4. **Test cleanup always runs** — try/finally pattern guarantees workflow deletion even on test failure, preventing n8n clutter.
+5. **Detailed failure types enable diagnostics** — status, missing_node, output_mismatch, execution_error, timeout types help Claude understand what went wrong.
 
 ### Observations from Phase 5.3-01 Execution
 
@@ -97,6 +110,6 @@ All v1.0 decisions logged in PROJECT.md Key Decisions table with outcomes.
 
 ## Session Continuity
 
-Last session: 2026-02-01T00:33:03Z
-Stopped at: Completed 05.3-01-PLAN.md (Executor Module)
-Resume with: Phase 5.3-02 (Test Harness) or Phase 5.3-03 (Feedback Loop)
+Last session: 2026-02-01T02:39:07Z
+Stopped at: Completed 05.3-02-PLAN.md (Test Harness)
+Resume with: Phase 5.3-03 (Feedback Loop)
