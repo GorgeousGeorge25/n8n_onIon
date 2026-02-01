@@ -2,11 +2,11 @@
 
 ## What This Is
 
-A TypeScript SDK that compiles type-safe workflow code to valid n8n JSON. Provides schema extraction from n8n instances, discriminated union type generation for node parameters, a fluent builder API with expression references, and a compiler that produces importable n8n workflows. Includes a typed node API (`nodes.slack.message.post(params)`) for compile-time parameter checking.
+A compiler layer that transforms TypeScript workflow definitions into valid n8n JSON. Provides a fluent builder API, async compilation with schema-aware typeVersions, deployment to n8n via REST API, and an integrated test harness. Schema cache populated via n8n-mcp integration or direct API extraction.
 
 ## Core Value
 
-Compiled workflows import and execute correctly in n8n on the first try — targeting 99% success rate by making invalid workflows unrepresentable in the type system.
+Compiled workflows import and execute correctly in n8n on the first try — the SDK handles typeVersions, UUIDs, topology-aware layout, and connection format automatically.
 
 ## Requirements
 
@@ -14,77 +14,67 @@ Compiled workflows import and execute correctly in n8n on the first try — targ
 
 - Schema extractor pulls node definitions from local n8n instance via REST API — v1.0
 - Schema cache stores extracted node definitions as local JSON — v1.0
-- Type generator transforms n8n schemas into TypeScript interfaces with conditional property dependencies — v1.0
 - Expression builder provides type-safe node output references that compile to n8n expression syntax — v1.0
 - Workflow builder API: `workflow()`, `wf.trigger()`, `wf.node()`, `wf.connect()` — v1.0
 - Compiler produces structurally valid n8n JSON (correct typeVersion, connections, UUIDs, positions) — v1.0
-- displayOptions conditional dependencies reflected in generated types (discriminated unions for resource/operation branching) — v1.0
-- ResourceLocator type handles mode/value pairs and shorthand — v1.0
-- CLI commands: `extract`, `generate`, `build`, `validate` — v1.0
-- v1 node coverage: Webhook, HTTP Request, Slack, IF, Set — v1.0
+- CLI commands: `build`, `validate`, `deploy`, `sync` — v1.0/v2.0
 - Snapshot tests compare compiled output against known-good n8n JSON — v1.0
 - Integration tests import compiled workflows into n8n via API — v1.0
-- Full schema extraction: 797 node schemas cached (687 base + 110 LangChain) — post-v1.0
-- Type generation for all 797 nodes: generated/nodes.ts (64,512 lines) — post-v1.0
+- Full schema extraction: 797 node schemas cached — v1.0
+- Deployment and activation via n8n REST API — v1.1
+- Credential support (4th parameter) — v1.1
+- Merge input indices and error handling paths — v1.1
+- Topology-aware BFS layout — v1.1
+- Automated workflow testing (deploy, execute, assert, cleanup) — v1.1
+- MCP bridge for schema sync and validation — v2.0
 
-### Active
+### Complete
 
-- [ ] SKILL.md — Claude skill reference for SDK usage (project root)
-- [ ] docs/README.md — Overview and quick start guide
-- [ ] docs/INSTALLATION.md — Setup and environment configuration
-- [ ] docs/API.md — Full API reference with typed parameters
-- [ ] docs/GUIDES.md — Step-by-step tutorials (5 guides)
-- [ ] docs/EXAMPLES.md — Complete copy-paste workflow examples (6 examples)
-- [ ] docs/TROUBLESHOOTING.md — Common issues and solutions
-- [ ] docs/NODES.md — Working with node types and interfaces
+All v1.0, v1.1, and v2.0 requirements shipped.
 
-## Current Milestone: v1.1 Documentation
+## Current Milestone: v2.0 Compiler Layer
 
-**Goal:** Comprehensive documentation for both Claude (SKILL.md) and human developers (docs/) so the SDK is usable without reading source code.
+**Goal:** Pivot from standalone SDK with generated factories to compiler layer that integrates with n8n-mcp ecosystem.
 
-**Target features:**
-- SKILL.md skill file for Claude with full API reference, patterns, and tips
-- User-facing docs with installation, API reference, tutorials, examples, troubleshooting
-- Complete code examples that compile and produce valid n8n JSON
+**What changed in v2.0:**
+- Removed `generated/` directory (145K+ lines of factories, types, catalog)
+- Removed `src/codegen/` (generator, conditional, factory-generator, typed-api)
+- Removed `cli/extract.ts` and `cli/generate.ts` (replaced by `cli/sync.ts`)
+- Added `src/mcp/` module (MCP bridge for schema sync and validation)
+- Users discover nodes via n8n-mcp `search_nodes`/`get_node`, not generated factories
 
 ### Out of Scope
 
-- Credential management — SDK references credential types but doesn't store/manage secrets
-- Workflow execution monitoring — SDK compiles, doesn't run
-- GUI or visual workflow builder — this is code-to-JSON only
+- Credential management — SDK references credentials by ID, doesn't store secrets
+- Node knowledge base — use n8n-mcp for node discovery and parameters
+- Generated type-safe factories — removed in v2.0 (redundant with n8n-mcp)
 
 ## Context
 
-- n8n instance running locally at http://localhost:5678 (Docker, version 2.33.1) with API key access
-- Shipped v1.0 with 5,047 LOC TypeScript, 61 tests, 5 target nodes
-- Post-v1.0: extracted all 797 node schemas from n8n instance (687 n8n-nodes-base + 110 n8n-nodes-langchain) and generated types for all of them (64,512 lines in generated/nodes.ts)
-- Architecture proven: schema extraction -> type generation -> builder -> compiler -> valid n8n JSON
-- Typed node API provides `nodes.slack.message.post(params)` with compile-time checking
-- n8n node schemas use `displayOptions.show` for conditional property visibility — solved with discriminated unions
-- Primary consumer is Claude generating workflow code — API minimizes ambiguity and maximizes pattern clarity
+- n8n instance running locally at http://localhost:5678 (Docker) with API key access
+- Architecture: schema cache → compiler → valid n8n JSON
+- MCP bridge (optional): n8n-mcp → schema sync → local cache → compiler
+- Primary consumer is Claude generating workflow code
+- 797 node schemas in cache, compiler reads typeVersion from these
 
 ## Constraints
 
 - **Runtime**: Node.js 18+, ESM modules
-- **Data source**: Schema extraction via n8n REST API (`/types/nodes.json` with session auth) and MCP tools for development
-- **Type strategy**: Discriminated unions for resource/operation branching at the type level
-- **Testing**: Both snapshot tests (fast iteration) and n8n API import tests (confidence)
-- **Node scope**: 5 nodes builder-tested in v1; 797 schemas extracted and typed (687 base + 110 LangChain)
+- **Schema source**: MCP sync (preferred) or direct n8n API extraction (fallback)
+- **Testing**: Snapshot tests + n8n API integration tests
+- **MCP optional**: Compilation works offline with cached schemas
 
 ## Key Decisions
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Discriminated unions for type branching | Best fit for displayOptions conditionals — strongest compile-time guarantees | Good — SlackMessagePost vs SlackChannelCreate enforced at compile time |
-| REST API + MCP hybrid for schema access | MCP for dev exploration, REST API in the CLI tool — keeps SDK standalone | Good — CLI works independently |
-| 5-node v1 scope | Prove the architecture before scaling to full coverage | Good — architecture proven, ready to scale |
-| Claude-first API design | Optimize for AI code generation patterns — clear, unambiguous, minimal variation | Good — fluent API works well for codegen |
-| Local project, package later | Skip npm overhead until the SDK works correctly | Good — shipped without packaging friction |
-| Proxy-based ref() chaining | Natural ref('X').out.field syntax without codegen | Good — zero dependencies, intuitive |
-| crypto.randomUUID for IDs | Native Node.js, zero dependencies | Good — v4 UUIDs, no collisions |
-| Partial<> for param types | n8n displayOptions makes required markers unreliable | Good — avoids false type errors |
-| /types/nodes.json endpoint | Bulk fetch all nodes, filter client-side | Good — single API call, efficient |
-| API key auth for integration tests | n8n public API v1 requires X-N8N-API-KEY header | Good — works with Docker n8n |
+| Claude-first API design | Optimize for AI code generation patterns | Good |
+| Proxy-based ref() chaining | Natural syntax without codegen | Good |
+| Async compileWorkflow | Required for schema registry loading | Good |
+| Schema cache as compiler input | Offline compilation, MCP only for populating cache | Good |
+| Remove generated factories (v2.0) | Redundant with n8n-mcp node discovery | Good — -146K lines |
+| MCP bridge for sync (v2.0) | Preferred over direct API for schema freshness | Good |
+| Keep extractor as fallback (v2.0) | Users without n8n-mcp can still populate cache | Good |
 
 ---
-*Last updated: 2026-01-31 after v1.1 milestone start*
+*Last updated: 2026-02-01 — v2.0 restructuring complete*
