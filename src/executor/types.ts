@@ -166,3 +166,110 @@ export interface NodeExecutionData {
   /** Output items from this node (flattened from all runs) */
   data: Array<Record<string, unknown>>;
 }
+
+/**
+ * Test scenario definition for workflow testing.
+ *
+ * Defines input data and expected outcomes for a single test case.
+ */
+export interface TestScenario {
+  /** Scenario name (for reporting) */
+  name: string;
+
+  /** Input data to send to the webhook trigger */
+  triggerData?: Record<string, unknown>;
+
+  /** Expected final execution status (default: 'success') */
+  expectedStatus?: ExecutionStatus;
+
+  /** Expected nodes that should execute */
+  expectedNodes?: string[];
+
+  /** Expected output data from specific nodes */
+  expectedOutput?: {
+    /** Node name to check */
+    nodeName: string;
+    /** Assertions to run on node output */
+    assertions: OutputAssertion[];
+  }[];
+}
+
+/**
+ * Output assertion for a single field.
+ */
+export interface OutputAssertion {
+  /** Field path to check (e.g., 'message', 'user.id') */
+  field: string;
+
+  /** Expected value */
+  expected: unknown;
+}
+
+/**
+ * Result of a single test scenario execution.
+ */
+export interface TestResult {
+  /** Scenario name */
+  scenario: string;
+
+  /** Whether scenario passed all assertions */
+  passed: boolean;
+
+  /** n8n execution ID (if execution occurred) */
+  executionId?: string;
+
+  /** Test duration in milliseconds */
+  duration: number;
+
+  /** List of assertion failures */
+  failures: TestFailure[];
+
+  /** Actual output data from nodes (for debugging) */
+  actualOutput?: NodeExecutionData[];
+
+  /** Execution error details (if execution failed) */
+  executionError?: ExecutionError;
+}
+
+/**
+ * Test failure details.
+ */
+export interface TestFailure {
+  /** Failure category */
+  type: 'status' | 'missing_node' | 'output_mismatch' | 'execution_error' | 'timeout';
+
+  /** Human-readable failure message */
+  message: string;
+
+  /** Expected value (for comparison failures) */
+  expected?: unknown;
+
+  /** Actual value (for comparison failures) */
+  actual?: unknown;
+}
+
+/**
+ * Aggregate test report for a workflow.
+ */
+export interface TestReport {
+  /** Workflow name */
+  workflowName: string;
+
+  /** Deployed workflow ID (if deployment succeeded) */
+  workflowId?: string;
+
+  /** Number of scenarios that passed */
+  passed: number;
+
+  /** Number of scenarios that failed */
+  failed: number;
+
+  /** Total number of scenarios */
+  total: number;
+
+  /** Results for each scenario */
+  results: TestResult[];
+
+  /** Whether cleanup (workflow deletion) succeeded */
+  cleaned: boolean;
+}
