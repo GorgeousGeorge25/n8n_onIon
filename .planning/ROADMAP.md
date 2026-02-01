@@ -88,10 +88,12 @@ Plans:
   5. **Feedback loop**: On test failure, the execution error and actual output are returned in a format Claude can read, diagnose, and use to fix the workflow code
   6. **Cleanup**: Test workflows are automatically deleted after testing (no leftover workflows in n8n)
   7. At least 3 different workflow patterns are tested end-to-end: linear (webhook → transform → output), branching (IF with both paths verified), and error handling
-**Plans**: 0 plans
+**Plans**: 3 plans
 
 Plans:
-- [ ] TBD (run /gsd:plan-phase 5.3 to break down)
+- [ ] 05.3-01-PLAN.md — Research n8n execution API + build executor module (types, execute, poll, cleanup)
+- [ ] 05.3-02-PLAN.md — Test harness (testWorkflow) + assertion framework with scenario-based testing
+- [ ] 05.3-03-PLAN.md — End-to-end integration tests for 3 workflow patterns + SDK exports
 
 ### Phase 5.4: Generate Typed Node APIs
 **Goal**: Every n8n node has a typed factory function that Claude can discover and use without reading massive generated files
@@ -165,7 +167,7 @@ Rationale: Correctness-first ordering. Fix the builder (5.2) so it produces corr
 |-------|-----------|----------------|--------|-----------|
 | 5.1 Deployable Package | v1.1 | 1/1 | Complete | 2026-01-31 |
 | 5.2 Complex Workflow Builder | v1.1 | 4/4 | Complete | 2026-01-31 |
-| 5.3 Automated Workflow Testing | v1.1 | 0/0 | Not started | - |
+| 5.3 Automated Workflow Testing | v1.1 | 0/3 | Planned | - |
 | 5.4 Generate Typed Node APIs | v1.1 | 0/0 | Not started | - |
 | 6. Foundation Docs | v1.1 | 0/1 | Not started | - |
 | 7. API and Tutorials | v1.1 | 0/2 | Not started | - |
