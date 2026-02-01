@@ -11,12 +11,12 @@ See: .planning/PROJECT.md (updated 2026-01-31)
 ## Current Position
 
 Phase: 5.4 of 8 (Generate Typed Node APIs)
-Plan: 1 of 3 in current phase
+Plan: 2 of 3 in current phase
 Status: In progress
-Last activity: 2026-02-01 — Completed 05.4-01-PLAN.md
+Last activity: 2026-02-01 — Completed 05.4-02-PLAN.md
 
 Progress: v1.0 shipped (5 phases, 12 plans, 61 tests)
-v1.1: [█████████░] 92% (9/8 plans)
+v1.1: [█████████░] 95% (10/8 plans)
 
 ## Performance Metrics
 
@@ -26,11 +26,11 @@ v1.1: [█████████░] 92% (9/8 plans)
 - Total execution time: 0.50 hours
 
 **v1.1 Velocity:**
-- Plans completed: 12
+- Plans completed: 13
 - Average duration: 3.5 minutes
 - Phase 5.2 total: 17 minutes (4 plans)
 - Phase 5.3 total: 12 minutes (3 plans) — COMPLETE
-- Phase 5.4 progress: 3 minutes (1 plan)
+- Phase 5.4 progress: 10 minutes (2 plans)
 
 ## Accumulated Context
 
@@ -72,6 +72,9 @@ All v1.0 decisions logged in PROJECT.md Key Decisions table with outcomes.
 | 05.4-01 | Types file size exception | Allow types.ts (18,417 lines) to exceed limit - it's interface definition, not implementation |
 | 05.4-01 | Keep full operation details in catalog | 384KB catalog worth extra 184KB for complete node metadata discovery |
 | 05.4-01 | Flat factory namespace | createTypedNodes() returns flat object (nodes.slack vs nodes.output.slack) for simpler usage |
+| 05.4-02 | Thin wrapper re-export pattern for generated code | src/codegen/typed-api.ts delegates to generated/factories/index.ts for backward compatibility |
+| 05.4-02 | TypedNodes explicit return type annotation | Fixes TypeScript serialization limit error for large return types |
+| 05.4-02 | Accept 7158 factory count vs 797 nodes | Multiple access patterns per node (flat, Tool suffix, nested) provide flexibility |
 
 ### Pending Todos
 
@@ -125,8 +128,18 @@ All v1.0 decisions logged in PROJECT.md Key Decisions table with outcomes.
 6. **Transform nodes dominate** — Required most splits (52 files). Reflects n8n's focus on data transformation operations.
 7. **Langchain nodes are simpler** — Only 3 split files needed. Most use simple configuration vs resource/operation pattern.
 
+### Observations from Phase 5.4-02 Execution
+
+1. **Thin wrapper re-export pattern works perfectly** — src/codegen/typed-api.ts reduced from 181 lines to 13 lines by delegating to generated/factories/index.ts. Perfect backward compatibility.
+2. **TypeScript serialization limits are real** — Large return types (7158 factory functions) exceed compiler's serialization limit. Explicit TypedNodes return type annotation required.
+3. **Factory count != node count** — 797 unique n8n nodes generate 7158 factory functions due to multiple access patterns (flat, Tool suffix, nested resource.operation). This is correct, not a bug.
+4. **Test walker validates structure** — Recursive object walker with deduplication validates all 7158 factory functions produce valid WorkflowNodes with name, type, parameters.
+5. **Zero test regressions** — All existing typed-api tests pass without modification, proving perfect backward compatibility after re-export pattern.
+6. **Generated files stay gitignored** — generated/factories/ directory gitignored as intended. Only source files (typed-api.ts, tests) committed.
+7. **Test suite now 85 tests** — Added comprehensive factory validation, all pass. Full suite runs in <800ms.
+
 ## Session Continuity
 
-Last session: 2026-02-01T13:18:24Z
-Stopped at: Completed 05.4-01-PLAN.md (Factory Generator Engine & Node Catalog)
-Resume with: Phase 5.4 plan 02 (Update Typed API with Generated Factories)
+Last session: 2026-02-01T13:31:49Z
+Stopped at: Completed 05.4-02-PLAN.md (Wire Generated Factories to Public API)
+Resume with: Phase 5.4 plan 03 (Update SKILL.md Documentation)
