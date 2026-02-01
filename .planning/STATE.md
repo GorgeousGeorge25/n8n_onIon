@@ -10,13 +10,13 @@ See: .planning/PROJECT.md (updated 2026-01-31)
 
 ## Current Position
 
-Phase: 5.3 of 8 (Automated Workflow Testing — IN PROGRESS)
-Plan: 2 of 3 in current phase
-Status: In progress
-Last activity: 2026-02-01 — Completed 05.3-02-PLAN.md
+Phase: 5.3 of 8 (Automated Workflow Testing — COMPLETE)
+Plan: 3 of 3 in current phase
+Status: Phase complete
+Last activity: 2026-02-01 — Completed 05.3-03-PLAN.md
 
 Progress: v1.0 shipped (5 phases, 12 plans, 61 tests)
-v1.1: [████████░░] 80% (7/8 plans)
+v1.1: [█████████░] 90% (8/8 plans)
 
 ## Performance Metrics
 
@@ -26,10 +26,10 @@ v1.1: [████████░░] 80% (7/8 plans)
 - Total execution time: 0.50 hours
 
 **v1.1 Velocity:**
-- Plans completed: 10
-- Average duration: 3.8 minutes
+- Plans completed: 11
+- Average duration: 3.6 minutes
 - Phase 5.2 total: 17 minutes (4 plans)
-- Phase 5.3 total: 8 minutes (2 plans so far)
+- Phase 5.3 total: 12 minutes (3 plans) — COMPLETE
 
 ## Accumulated Context
 
@@ -63,6 +63,9 @@ All v1.0 decisions logged in PROJECT.md Key Decisions table with outcomes.
 | 05.3-02 | Deep comparison using JSON.stringify for object assertions | Simple, reliable comparison for complex objects without deep-equality library dependency |
 | 05.3-02 | Always cleanup workflow even on test failure | Prevents n8n instance clutter with test workflows using try/finally pattern |
 | 05.3-02 | Return detailed failures with type/message/expected/actual | Enables Claude to diagnose and fix failures with actual output data for debugging |
+| 05.3-03 | it.skipIf() pattern for n8n availability | Prevents test failures when n8n offline, cleaner than early return |
+| 05.3-03 | Unique webhook paths per test | Prevents conflicts between parallel test runs using Date.now() timestamp |
+| 05.3-03 | Set v3.4 assignments format | mode: manual, assignments array with id/name/value/type structure replaces legacy values.string format |
 
 ### Pending Todos
 
@@ -85,21 +88,16 @@ All v1.0 decisions logged in PROJECT.md Key Decisions table with outcomes.
 - ~~Phase 5.3-02: Webhook registration may require delay after activation (1-2s) for reliable execution~~ → Addressed in 05.3-02 (2s delay implemented)
 - Doc phases (6-8) success criteria are outdated — written for 5-node SDK, need update after 792-node SDK ships
 
-### Observations from Phase 5.3-02 Execution
+### Observations from Phase 5.3 Execution
 
 1. **testWorkflow() provides complete testing feedback loop** — Single function call deploys, executes, asserts, and cleans up. Returns detailed pass/fail results with diagnostic information.
 2. **2-second webhook registration delay is critical** — Without delay, webhooks return 404. n8n needs time to load workflow after activation.
 3. **Nested field assertions via dot notation** — getNestedField() helper enables assertions like 'user.id' without complex traversal code.
 4. **Test cleanup always runs** — try/finally pattern guarantees workflow deletion even on test failure, preventing n8n clutter.
 5. **Detailed failure types enable diagnostics** — status, missing_node, output_mismatch, execution_error, timeout types help Claude understand what went wrong.
-
-### Observations from Phase 5.3-01 Execution
-
-1. **n8n public API v1 does NOT support Manual Trigger execution** — Verified via research. POST /api/v1/workflows/{id}/execute returns 405. POST /api/v1/executions returns 405. Only webhook-based execution works via public API.
-2. **GET /api/v1/executions/{id}?includeData=true** — Verified working. Returns full execution data with per-node outputs. Without parameter, response omits node data.
-3. **Webhook registration requires activation** — Webhooks must be activated AND registered (n8n loads workflow). May need 1-2s delay after activation before triggering.
-4. **Test workflows must use Webhook triggers** — Manual Trigger not viable for automated testing via public API. All test scenarios should use Webhook nodes.
-5. **extractNodeData() simplifies assertions** — Helper flattens complex n8n execution structure to {nodeName, data[]} format for easier test assertions.
+6. **it.skipIf() vs early return** — Early return in tests causes vitest to run assertions after return, leading to failures. it.skipIf() properly skips entire test.
+7. **Set node schema evolution** — Set v3.4 format significantly different from v1.0: assignments.assignments array structure, explicit type field, UUID id per assignment.
+8. **Test suite now 85 tests** — 80 existing + 5 new executor integration tests. All pass, executor tests skip gracefully when n8n unavailable.
 
 ### Observations from Phase 5.2 Execution
 
@@ -110,6 +108,6 @@ All v1.0 decisions logged in PROJECT.md Key Decisions table with outcomes.
 
 ## Session Continuity
 
-Last session: 2026-02-01T02:39:07Z
-Stopped at: Completed 05.3-02-PLAN.md (Test Harness)
-Resume with: Phase 5.3-03 (Feedback Loop)
+Last session: 2026-02-01T00:46:46Z
+Stopped at: Completed 05.3-03-PLAN.md (Integration Tests & SDK Exports)
+Resume with: Phase 5.3 complete — ready for Phase 5.4 (Generate Typed Node APIs) or other work
