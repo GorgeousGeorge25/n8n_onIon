@@ -6,7 +6,7 @@ See: .planning/PROJECT.md (updated 2026-01-31)
 
 **Core value:** Compiled workflows import and execute correctly in n8n on the first try — targeting 99% success rate
 
-**Current focus:** v1.1 — Phase 5.4 (Generate Typed Node APIs)
+**Current focus:** v1.1 — Phase 5.4 COMPLETE, next: Phase 6 (Foundation Docs)
 
 ## Current Position
 

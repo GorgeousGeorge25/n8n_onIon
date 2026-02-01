@@ -28,7 +28,7 @@ Post-v1.0: All 797 node schemas extracted and typed (64,512 lines).
 - [x] **Phase 5.1: Deployable Package** - Build and deploy workflows through tool calls, no manual steps (COMPLETE)
 - [x] **Phase 5.2: Complex Workflow Builder** - typeVersion fix, credential support, merge input indices, error-handling paths, validation (COMPLETE)
 - [x] **Phase 5.3: Automated Workflow Testing** - Execute deployed workflows, verify with test data, self-diagnose and fix failures (COMPLETE)
-- [ ] **Phase 5.4: Generate Typed Node APIs** - Split typed-api.ts, auto-generate factories for all 792 nodes, discovery catalog, SKILL.md update
+- [x] **Phase 5.4: Generate Typed Node APIs** - Split typed-api.ts, auto-generate factories for all 797 nodes, discovery catalog, SKILL.md update (COMPLETE)
 - [ ] **Phase 6: Foundation Docs** - Human-facing docs (README, installation guide); rescope after 5.2-5.4 ship
 - [ ] **Phase 7: API and Tutorials** - Full API reference and step-by-step guides; rescope after 5.2-5.4 ship
 - [ ] **Phase 8: Examples and Reference** - Complete examples, troubleshooting, and node reference; rescope after 5.2-5.4 ship
@@ -109,9 +109,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 05.4-01-PLAN.md — Factory generator engine + node discovery catalog
-- [ ] 05.4-02-PLAN.md — Wire factories into public API + backward compat tests
-- [ ] 05.4-03-PLAN.md — SKILL.md with full 797-node SDK reference
+- [x] 05.4-01-PLAN.md — Factory generator engine + node discovery catalog
+- [x] 05.4-02-PLAN.md — Wire factories into public API + backward compat tests
+- [x] 05.4-03-PLAN.md — SKILL.md with full 797-node SDK reference
 
 ### Phase 6: Foundation Docs
 **Goal**: A new user (human or Claude) can understand what the SDK does and get it running
@@ -170,7 +170,7 @@ Rationale: Correctness-first ordering. Fix the builder (5.2) so it produces corr
 | 5.1 Deployable Package | v1.1 | 1/1 | Complete | 2026-01-31 |
 | 5.2 Complex Workflow Builder | v1.1 | 4/4 | Complete | 2026-01-31 |
 | 5.3 Automated Workflow Testing | v1.1 | 3/3 | Complete | 2026-02-01 |
-| 5.4 Generate Typed Node APIs | v1.1 | 0/3 | Not started | - |
+| 5.4 Generate Typed Node APIs | v1.1 | 3/3 | Complete | 2026-02-01 |
 | 6. Foundation Docs | v1.1 | 0/1 | Not started | - |
 | 7. API and Tutorials | v1.1 | 0/2 | Not started | - |
 | 8. Examples and Reference | v1.1 | 0/2 | Not started | - |
