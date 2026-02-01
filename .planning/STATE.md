@@ -6,7 +6,7 @@ See: .planning/PROJECT.md (updated 2026-01-31)
 
 **Core value:** Compiled workflows import and execute correctly in n8n on the first try — targeting 99% success rate
 
-**Current focus:** v1.1 — Phase 5.3 (Automated Workflow Testing)
+**Current focus:** v1.1 — Phase 5.4 (Generate Typed Node APIs)
 
 ## Current Position
 
@@ -110,4 +110,4 @@ All v1.0 decisions logged in PROJECT.md Key Decisions table with outcomes.
 
 Last session: 2026-02-01T00:46:46Z
 Stopped at: Completed 05.3-03-PLAN.md (Integration Tests & SDK Exports)
-Resume with: Phase 5.3 complete — ready for Phase 5.4 (Generate Typed Node APIs) or other work
+Resume with: `/gsd:discuss-phase 5.4` or `/gsd:plan-phase 5.4`
