@@ -23,6 +23,12 @@ export { validateWorkflow } from './compiler/validation.js';
 export { calculateGridPosition, calculateTopologyPositions } from './compiler/layout.js';
 export { loadSchemaRegistry, getTypeVersion } from './compiler/schema-registry.js';
 
+// MCP bridge
+export { getMcpClient, closeMcpClient } from './mcp/client.js';
+export { syncNodeSchema, syncAllSchemas, checkSchemaFreshness, transformMcpNodeResponse } from './mcp/schema-sync.js';
+export type { SyncResult } from './mcp/schema-sync.js';
+export { validateViaMcp } from './mcp/validate.js';
+
 // Deployer
 export * from './deployer/types.js';
 export { deployWorkflow } from './deployer/deploy.js';
