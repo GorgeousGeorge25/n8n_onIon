@@ -5,7 +5,7 @@ import type { WorkflowNode } from '../../builder/types.js';
 describe('Typed Node API', () => {
   const nodes = createTypedNodes();
 
-  describe('Simple nodes produce correct WorkflowNode', () => {
+  describe('Backward compatibility - original hand-written factories', () => {
     it('webhook produces WorkflowNode with correct type and parameters', () => {
       const result = nodes.webhook('Trigger', { httpMethod: 'POST', path: '/hook' });
 
@@ -45,9 +45,7 @@ describe('Typed Node API', () => {
         parameters: { mode: 'manual' },
       });
     });
-  });
 
-  describe('Slack nested resource.operation pattern', () => {
     it('slack.message.post produces correct WorkflowNode with auto-injected resource/operation', () => {
       const result = nodes.slack.message.post('Notify', {
         select: 'channel',
@@ -81,19 +79,111 @@ describe('Typed Node API', () => {
     });
   });
 
-  describe('Auto-injection verification', () => {
-    it('user does NOT pass resource/operation — factory adds them', () => {
-      const result = nodes.slack.message.post('Test', {
-        select: 'channel',
-        channelId: '#test',
-        text: 'hi',
-      });
+  describe('Generated factories - new nodes', () => {
+    it('gmail.message.send produces correct WorkflowNode', () => {
+      const result = nodes.gmail.message.send('Send Email', {});
 
-      // User params should not contain resource/operation
-      // But the result should have them auto-injected
-      expect(result.parameters.resource).toBe('message');
-      expect(result.parameters.operation).toBe('post');
-      expect(result.parameters.text).toBe('hi');
+      expect(result.name).toBe('Send Email');
+      expect(result.type).toBe('n8n-nodes-base.gmail');
+      expect(result.parameters).toMatchObject({
+        resource: 'message',
+        operation: 'send',
+      });
+    });
+
+    it('code produces correct WorkflowNode', () => {
+      const result = nodes.code('Run Code', {});
+
+      expect(result.name).toBe('Run Code');
+      expect(result.type).toBe('n8n-nodes-base.code');
+      expect(result.parameters).toBeDefined();
+    });
+
+    it('httpRequestTool produces correct WorkflowNode', () => {
+      const result = nodes.httpRequestTool('Fetch Data', {});
+
+      expect(result.name).toBe('Fetch Data');
+      expect(result.type).toBe('n8n-nodes-base.httpRequestTool');
+      expect(result.parameters).toBeDefined();
+    });
+
+    it('manualTrigger produces correct WorkflowNode', () => {
+      const result = nodes.manualTrigger('Start', {});
+
+      expect(result.name).toBe('Start');
+      expect(result.type).toBe('n8n-nodes-base.manualTrigger');
+      expect(result.parameters).toBeDefined();
+    });
+  });
+
+  describe('Comprehensive validation - all 797 factories', () => {
+    it('walks all factories and verifies they produce valid WorkflowNodes', () => {
+      let factoryCount = 0;
+      const errors: string[] = [];
+      const seen = new Set<string>();
+
+      function walkObject(obj: any, path: string[] = []): void {
+        for (const key in obj) {
+          const value = obj[key];
+          const currentPath = [...path, key];
+          const pathStr = currentPath.join('.');
+
+          if (typeof value === 'function') {
+            // Avoid counting duplicates (in case there are re-exports)
+            if (seen.has(pathStr)) continue;
+            seen.add(pathStr);
+
+            factoryCount++;
+            try {
+              const node = value('Test', {});
+
+              // Verify WorkflowNode shape
+              if (!node.name || typeof node.name !== 'string') {
+                errors.push(`${pathStr}: missing or invalid 'name' property`);
+              }
+              if (!node.type || typeof node.type !== 'string') {
+                errors.push(`${pathStr}: missing or invalid 'type' property`);
+              }
+              if (!node.parameters || typeof node.parameters !== 'object') {
+                errors.push(`${pathStr}: missing or invalid 'parameters' property`);
+              }
+            } catch (err) {
+              errors.push(`${pathStr}: factory call failed - ${err}`);
+            }
+          } else if (typeof value === 'object' && value !== null) {
+            // Recurse into nested objects
+            walkObject(value, currentPath);
+          }
+        }
+      }
+
+      walkObject(nodes);
+
+      // Report errors if any
+      if (errors.length > 0) {
+        console.error('Factory validation errors:');
+        errors.forEach(err => console.error(`  - ${err}`));
+      }
+
+      expect(errors).toEqual([]);
+      // Note: The actual count is higher because the generated structure includes
+      // both simple factories and nested resource.operation factories
+      expect(factoryCount).toBeGreaterThanOrEqual(797);
+      console.log(`Total factory functions found: ${factoryCount}`);
+    });
+
+    it('verifies resource/operation injection for nodes with nested structure', () => {
+      // Test a few samples to verify resource/operation auto-injection
+      const samples = [
+        { factory: nodes.slack.message.post, expected: { resource: 'message', operation: 'post' } },
+        { factory: nodes.gmail.message.send, expected: { resource: 'message', operation: 'send' } },
+        { factory: nodes.github.file.create, expected: { resource: 'file', operation: 'create' } },
+      ];
+
+      for (const { factory, expected } of samples) {
+        const node = factory('Test', {});
+        expect(node.parameters).toMatchObject(expected);
+      }
     });
   });
 
@@ -105,6 +195,8 @@ describe('Typed Node API', () => {
         nodes.if('I', { conditions: {} }),
         nodes.set('S', { mode: 'manual' }),
         nodes.slack.message.post('M', { select: 'channel', channelId: '#c', text: 'x' }),
+        nodes.gmail.message.send('G', {}),
+        nodes.code('C', {}),
       ];
 
       for (const node of testCases) {
