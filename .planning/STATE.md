@@ -11,12 +11,12 @@ See: .planning/PROJECT.md (updated 2026-01-31)
 ## Current Position
 
 Phase: 5.4 of 8 (Generate Typed Node APIs)
-Plan: 2 of 3 in current phase
-Status: In progress
-Last activity: 2026-02-01 — Completed 05.4-02-PLAN.md
+Plan: 3 of 3 in current phase
+Status: Phase complete
+Last activity: 2026-02-01 — Completed 05.4-03-PLAN.md (Update SKILL.md Documentation)
 
 Progress: v1.0 shipped (5 phases, 12 plans, 61 tests)
-v1.1: [█████████░] 95% (10/8 plans)
+v1.1: [██████████] 100% (11/11 plans) — PHASE 5.4 COMPLETE
 
 ## Performance Metrics
 
@@ -26,11 +26,11 @@ v1.1: [█████████░] 95% (10/8 plans)
 - Total execution time: 0.50 hours
 
 **v1.1 Velocity:**
-- Plans completed: 13
-- Average duration: 3.5 minutes
-- Phase 5.2 total: 17 minutes (4 plans)
+- Plans completed: 14
+- Average duration: 3.4 minutes
+- Phase 5.2 total: 17 minutes (4 plans) — COMPLETE
 - Phase 5.3 total: 12 minutes (3 plans) — COMPLETE
-- Phase 5.4 progress: 10 minutes (2 plans)
+- Phase 5.4 total: 13 minutes (3 plans) — COMPLETE
 
 ## Accumulated Context
 
@@ -75,6 +75,9 @@ All v1.0 decisions logged in PROJECT.md Key Decisions table with outcomes.
 | 05.4-02 | Thin wrapper re-export pattern for generated code | src/codegen/typed-api.ts delegates to generated/factories/index.ts for backward compatibility |
 | 05.4-02 | TypedNodes explicit return type annotation | Fixes TypeScript serialization limit error for large return types |
 | 05.4-02 | Accept 7158 factory count vs 797 nodes | Multiple access patterns per node (flat, Tool suffix, nested) provide flexibility |
+| 05.4-03 | SKILL.md is Claude skill reference | Optimized for AI consumption rather than human docs - focuses on practical usage patterns |
+| 05.4-03 | Catalog-based node discovery | Document generated/node-catalog.json pattern instead of listing all 797 nodes inline |
+| 05.4-03 | Complete function signatures from source | Read actual exports to ensure accuracy rather than guessing API signatures |
 
 ### Pending Todos
 
@@ -138,8 +141,18 @@ All v1.0 decisions logged in PROJECT.md Key Decisions table with outcomes.
 6. **Generated files stay gitignored** — generated/factories/ directory gitignored as intended. Only source files (typed-api.ts, tests) committed.
 7. **Test suite now 85 tests** — Added comprehensive factory validation, all pass. Full suite runs in <800ms.
 
+### Observations from Phase 5.4-03 Execution
+
+1. **SKILL.md is comprehensive Claude reference** — 759 lines covering all 797 nodes, typed factories, catalog discovery, deployment, testing, credentials, error handling. Claude can generate valid workflows without consulting other files.
+2. **Catalog-based discovery pattern** — Instead of listing 797 nodes inline, document how to read generated/node-catalog.json for node metadata. Keeps docs manageable while providing full access.
+3. **Function signatures verified from source** — Read actual workflow.ts, compiler.ts, deploy.ts, test-harness.ts to get exact signatures. All documented APIs match actual exports in src/index.ts.
+4. **5 common workflow patterns** — Linear, branching, error handling, merge, deploy+test. Complete working examples Claude can adapt for new workflows.
+5. **v1.1 capabilities fully documented** — deployWorkflow(), testWorkflow(), credentials (4th parameter), connectError(), async compileWorkflow, Set v3.4 format, all new in v1.1.
+6. **Phase 5.4 complete** — All 3 plans shipped: catalog generation, factory wiring, SKILL.md documentation. 797 nodes accessible via typed factories with complete reference documentation.
+
 ## Session Continuity
 
-Last session: 2026-02-01T13:31:49Z
-Stopped at: Completed 05.4-02-PLAN.md (Wire Generated Factories to Public API)
-Resume with: Phase 5.4 plan 03 (Update SKILL.md Documentation)
+Last session: 2026-02-01T13:38:13Z
+Stopped at: Completed 05.4-03-PLAN.md (Update SKILL.md Documentation)
+Phase 5.4 complete: All 3 plans executed successfully
+Resume with: Next phase (6-product-pages, 7-guides, or new feature development)
